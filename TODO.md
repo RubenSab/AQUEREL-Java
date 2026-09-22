@@ -1,12 +1,12 @@
 # To do
 
 - [x] Implement execution data structures (translate from python prototype)
-- [ ] Implement node content behaviour inside the custom types
-- [ ] Test execution data structures and type operations
+- [x] Implement node content behaviour (a support for later operation implementations) inside the custom types
 - [ ] Implement parser (translate from python prototype)
+- [ ] Test execution data structures and type operations
 - [ ] Implement interpreter loop calling element node at each step
 - [ ] Implement operations INSIDE INTERPRETER
-- [ ] remove mainlen and put mainempty?
+- [ ] remove mainlen and put ismainempty
 
 # Notes
 

@@ -12,4 +12,12 @@ public class StringContent implements NodeContentType<String> {
     public String getValue() {
         return value;
     }
+
+    public StringContent getchar(NumberContent index) {
+        return new StringContent(String.valueOf(value.charAt(index.getValue().intValue())));
+    }
+
+    public StringContent join(StringContent other) {
+        return new StringContent(String.join(value, other.getValue()));
+    }
 }
