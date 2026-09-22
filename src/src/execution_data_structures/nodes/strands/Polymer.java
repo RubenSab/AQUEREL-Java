@@ -13,6 +13,10 @@ public class Polymer {
         this.end = end;
     }
 
+    public Polymer(Node<?> node) {
+        new Polymer(node, node);
+    }
+
     @Override
     public String toString() {
         if (start == null) return "";
