@@ -20,4 +20,9 @@ public class StringContent implements NodeContent<String> {
     public StringContent join(StringContent other) {
         return new StringContent(String.join(value, other.getValue()));
     }
+
+    @Override
+    public String toString() {
+        return "'" + value.toString() + "'";
+    }
 }

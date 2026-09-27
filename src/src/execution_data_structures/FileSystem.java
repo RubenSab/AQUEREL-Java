@@ -1,5 +1,6 @@
 package execution_data_structures;
 
+import executors.ExceptionLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,7 +23,7 @@ public class FileSystem {
 
     public String read(String filename) throws IOException {
         if (!isValid(filename)) {
-            throw new IOException(); /* TODO: make an exception logger and route to it instead */
+            ExceptionLogger.logInvalidFilename(filename);
         }
         List<String> lines = Files.readAllLines(Paths.get(sandboxRoot, filename));
         return String.join("\n", lines);

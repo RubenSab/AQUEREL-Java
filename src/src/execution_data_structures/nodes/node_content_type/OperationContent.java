@@ -85,4 +85,9 @@ public enum OperationContent implements NodeContent<OperationContent> {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return token.toString();
+    }
 }

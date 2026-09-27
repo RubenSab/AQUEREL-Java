@@ -1,9 +1,10 @@
-import java.time.Instant;
+import execution_data_structures.nodes.strands.Polymer;
+import executors.Interpreter;
 
 public class Main {
-    public static void main(String[] args) {
-        Instant now = Instant.now();
-        System.out.println((double) now.getEpochSecond());
-        System.out.println((double) now.getNano());
+    public static void main(String[] args) throws Exception {
+        Interpreter i = new Interpreter();
+        Polymer parsed = i.parse("src/test/test");
+        System.out.println(parsed);
     }
 }

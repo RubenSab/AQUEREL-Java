@@ -29,4 +29,9 @@ public enum BracketContent implements NodeContent<BracketContent> {
     public String getToken() {
         return token;
     }
+
+    @Override
+    public String toString() {
+        return token.toString();
+    }
 }

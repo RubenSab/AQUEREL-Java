@@ -30,4 +30,9 @@ public class Node<T extends NodeContent<?>> {
     public void setPrev(Node<?> prev) {
         this.prev = prev;
     }
+
+    @Override
+    public String toString() {
+        return content.toString();
+    }
 }

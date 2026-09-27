@@ -46,6 +46,8 @@ public class Polymer {
             end = node;
         } else {
             end.setNext(node);
+            node.setPrev(end);
+            end = node;
         }
     }
 
@@ -61,7 +63,7 @@ public class Polymer {
         }
     }
 
-    public void insert_strand_after(Node<?> target, Polymer polymer) {
+    public void insert_polymer_after(Node<?> target, Polymer polymer) {
         if (target.getNext() != null) {
             target.getNext().setPrev(polymer.getEnd());
             polymer.getEnd().setNext(target.getNext());
@@ -91,7 +93,7 @@ public class Polymer {
         return node;
     }
 
-    public Polymer extract_strand(Node<?> start, Node<?> end) {
+    public Polymer extract_polymer(Node<?> start, Node<?> end) {
         Node<?> prev = start.getPrev();
         Node<?> next = end.getNext();
         if (prev != null) {
@@ -128,7 +130,7 @@ public class Polymer {
         target.setPrev(null);
     }
 
-    public void replace_node_with_strand(Node<?> target, Polymer replacement) {
+    public void replace_node_with_polymer(Node<?> target, Polymer replacement) {
         if (target == start) {
             start = replacement.getStart();
         }

@@ -1,9 +1,11 @@
+package executors;
+
 import execution_data_structures.*;
 import execution_data_structures.nodes.Node;
 import execution_data_structures.nodes.node_content_type.*;
 import execution_data_structures.nodes.strands.Polymer;
+import utils.Utils;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -17,7 +19,7 @@ public class Interpreter {
     private FileSystem fileSystem;
     private Clock clock;
 
-    private Polymer parse(String filename) throws IOException {
+    public Polymer parse(String filename) throws Exception {
         List<String> lines = Files.readAllLines(Paths.get(filename));
         String.join("\n", lines);
         if (lines.isEmpty()) {
@@ -26,19 +28,20 @@ public class Interpreter {
         Polymer parsed = new Polymer();
         Stack<Node<BracketContent>> bracketStack = new Stack<>();
         Node prevNode = null;
-        for (int i = 0; i < lines.toArray().length; i++) {
-            List<String> tokens = Utils.findallMatches("'[^']*'|[^\s()]+|[()]", lines.get(i));
+        for (int i = 0; i < lines.size(); i++) {
+            List<String> tokens = Utils.findallMatches("'(?:\\\\.|[^'\\\\])*'|[^\\s()]+|[()]", lines.get(i));
             for (String t : tokens) {
                 NodeContent content = tokenToContent(t);
                 Node<?> current = new Node<>(content);
                 parsed.append(current);
                 if (content instanceof BracketContent) {
-                    if (content.getValue().equals(BracketContent.CLOSED) &&
-                            !bracketStack.isEmpty() &&
-                            bracketStack.peek().getContent().getValue().equals(BracketContent.OPEN)) {
+                    if (content.getValue().equals(BracketContent.CLOSED)) {
+                        if (bracketStack.isEmpty()) {
+                            ExceptionLogger.logUnmatchedBracket(i);
+                        }
                         Node<BracketContent> corresponding = bracketStack.pop();
                         ((BracketContent) current.getContent()).setCorresponding(corresponding);
-                        corresponding.getContent().setCorresponding(corresponding);
+                        corresponding.getContent().setCorresponding(current);
                     } else {
                         bracketStack.push((Node<BracketContent>) current);
                     }
@@ -55,7 +58,7 @@ public class Interpreter {
             case ")" -> BracketContent.CLOSED;
             case String t when Utils.isNumeric(t) -> new NumberContent(token);
             case String t when t.startsWith("'") && t.endsWith("'") ->
-                    new StringContent(t.substring(1, t.length()-2));
+                    new StringContent(t.substring(1, t.length()-1));
             case String t when Arrays.asList(OperationContent.values()).contains(t) ->
                     OperationContent.fromToken(t);
             default -> new NameContent(token);

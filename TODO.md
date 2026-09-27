@@ -10,8 +10,8 @@
 
 # Notes
 
-- Implement node execution + enzyme behavior in Interpreter itself, not in nodes or other classes.
-- Make every execution structure a field of Interpreter instances.
+- Implement node execution + enzyme behavior in executors.Interpreter itself, not in nodes or other classes.
+- Make every execution structure a field of executors.Interpreter instances.
 - Don't make interpreter a singleton.
 - Rename both Github repo and IntelliJ's as Polymeric-language.
 - The blog post could be titled "Meet the Polymeric language: an exotic model of computation".

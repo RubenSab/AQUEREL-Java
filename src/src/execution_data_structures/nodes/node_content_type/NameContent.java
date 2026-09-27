@@ -12,4 +12,9 @@ public class NameContent implements NodeContent<String> {
     public String getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 }
