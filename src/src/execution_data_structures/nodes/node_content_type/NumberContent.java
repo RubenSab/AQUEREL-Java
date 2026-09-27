@@ -1,6 +1,6 @@
 package execution_data_structures.nodes.node_content_type;
 
-public class NumberContent implements NodeContentType<Double> {
+public class NumberContent implements NodeContent<Double> {
 
     private final Double value;
 

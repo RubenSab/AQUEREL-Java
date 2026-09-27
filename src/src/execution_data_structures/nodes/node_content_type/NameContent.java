@@ -1,6 +1,6 @@
 package execution_data_structures.nodes.node_content_type;
 
-public class NameContent implements NodeContentType<String> {
+public class NameContent implements NodeContent<String> {
 
     private final String value;
 

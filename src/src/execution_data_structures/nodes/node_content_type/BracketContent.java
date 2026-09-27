@@ -2,7 +2,7 @@ package execution_data_structures.nodes.node_content_type;
 
 import execution_data_structures.nodes.Node;
 
-public enum BracketContent implements NodeContentType<BracketContent> {
+public enum BracketContent implements NodeContent<BracketContent> {
     OPEN("("),
     CLOSED(")");
 

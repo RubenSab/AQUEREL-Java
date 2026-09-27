@@ -38,6 +38,17 @@ public class Polymer {
         return start;
     }
 
+    public void append(Node<?> node) {
+        if (start == null || end == null) {
+            node.setNext(null);
+            node.setPrev(null);
+            start = node;
+            end = node;
+        } else {
+            end.setNext(node);
+        }
+    }
+
     public void insert_node_after(Node<?> target, Node<?> node) {
         if (target.getNext() != null) {
             target.getNext().setPrev(node);

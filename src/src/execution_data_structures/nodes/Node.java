@@ -1,8 +1,8 @@
 package execution_data_structures.nodes;
 
-import execution_data_structures.nodes.node_content_type.NodeContentType;
+import execution_data_structures.nodes.node_content_type.NodeContent;
 
-public abstract class Node<T extends NodeContentType<?>> {
+public class Node<T extends NodeContent<?>> {
     private Node<?> next;
     private Node<?> prev;
     private final T content;
