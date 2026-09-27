@@ -1,6 +1,4 @@
-package execution_data_structures.nodes.strands;
-
-import execution_data_structures.nodes.Node;
+package execution_data_structures.nodes;
 
 public class Polymer {
     private Node<?> start;

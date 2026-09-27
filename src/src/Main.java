@@ -1,4 +1,4 @@
-import execution_data_structures.nodes.strands.Polymer;
+import execution_data_structures.nodes.Polymer;
 import executors.Interpreter;
 
 public class Main {

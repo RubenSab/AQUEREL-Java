@@ -3,7 +3,7 @@ package executors;
 import execution_data_structures.*;
 import execution_data_structures.nodes.Node;
 import execution_data_structures.nodes.node_content_type.*;
-import execution_data_structures.nodes.strands.Polymer;
+import execution_data_structures.nodes.Polymer;
 import utils.Utils;
 
 import java.nio.file.Files;
