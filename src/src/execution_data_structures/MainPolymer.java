@@ -5,10 +5,8 @@ import execution_data_structures.nodes.Polymer;
 
 public class MainPolymer extends Polymer {
     private Node<?> enzyme;
-    private Polymer polymer;
     
     public MainPolymer(Polymer polymer) {
-        this.polymer = polymer;
         this.enzyme = polymer.getStart();
     }
 

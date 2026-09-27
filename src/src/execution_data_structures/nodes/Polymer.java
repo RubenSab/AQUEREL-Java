@@ -73,7 +73,7 @@ public class Polymer {
         }
     }
 
-    public Node extract_node(Node<?> node) {
+    public Node<?> extract_node(Node<?> node) {
         Node<?> prev = node.getPrev();
         Node<?> next = node.getNext();
         if (prev != null) {
