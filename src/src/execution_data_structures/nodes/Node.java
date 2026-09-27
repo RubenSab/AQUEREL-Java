@@ -15,6 +15,10 @@ public class Node<T extends NodeContent<?>> {
         return next;
     }
 
+    public boolean hasNext() {
+        return getNext() != null;
+    }
+
     public Node<?> getPrev() {
         return prev;
     }
@@ -29,6 +33,10 @@ public class Node<T extends NodeContent<?>> {
 
     public void setPrev(Node<?> prev) {
         this.prev = prev;
+    }
+
+    public Node<?> execute() {
+        return null;
     }
 
     @Override

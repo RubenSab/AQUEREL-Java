@@ -6,5 +6,6 @@ public class Main {
         Interpreter i = new Interpreter();
         Polymer parsed = i.parse("src/test/test");
         System.out.println(parsed);
+        i.interpret(parsed);
     }
 }

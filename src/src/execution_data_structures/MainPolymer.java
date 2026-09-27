@@ -5,9 +5,23 @@ import execution_data_structures.nodes.Polymer;
 
 public class MainPolymer extends Polymer {
     private Node<?> enzyme;
+    private Polymer polymer;
+    
+    public MainPolymer(Polymer polymer) {
+        this.polymer = polymer;
+        this.enzyme = polymer.getStart();
+    }
 
-    public Node<?> getCurrent() {
+    public boolean hasEnzyme() {
+        return enzyme != null;
+    }
+
+    public Node<?> getEnzyme() {
         return enzyme;
+    }
+    
+    public void setEnzyme(Node<?> target) {
+        this.enzyme = target;
     }
 
     public void moveRight() {

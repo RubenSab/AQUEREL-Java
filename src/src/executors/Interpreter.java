@@ -19,7 +19,7 @@ public class Interpreter {
     private FileSystem fileSystem;
     private Clock clock;
 
-    public Polymer parse(String filename) throws Exception {
+    public static Polymer parse(String filename) throws Exception {
         List<String> lines = Files.readAllLines(Paths.get(filename));
         String.join("\n", lines);
         if (lines.isEmpty()) {
@@ -52,7 +52,7 @@ public class Interpreter {
         return parsed;
     }
 
-    private NodeContent tokenToContent(String token) {
+    private static NodeContent tokenToContent(String token) {
         return switch (token) {
             case "(" -> BracketContent.OPEN;
             case ")" -> BracketContent.CLOSED;
@@ -65,5 +65,15 @@ public class Interpreter {
         };
     }
 
-    public void interpret() {}
+    public void interpret(Polymer polymer) {
+        mainPolymer = new MainPolymer(polymer);
+        while (mainPolymer.hasEnzyme()) {
+            mainPolymer.setEnzyme(executeNodeAndGetNext(mainPolymer.getEnzyme()));
+        }
+    }
+
+    private Node<?> executeNodeAndGetNext(Node<?> current) {
+        System.out.println(current);
+        return current.getNext();
+    }
 }

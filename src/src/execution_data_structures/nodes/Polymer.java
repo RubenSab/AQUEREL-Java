@@ -1,6 +1,8 @@
 package execution_data_structures.nodes;
 
-public class Polymer {
+import java.util.Iterator;
+
+public class Polymer implements Iterable {
     private Node<?> start;
     private Node<?> end;
 
@@ -145,5 +147,29 @@ public class Polymer {
         replacement.getStart().setPrev(target.getPrev());
         target.setNext(null);
         target.setPrev(null);
+    }
+
+    @Override
+    public Iterator iterator() {
+        return new PolymerIterator();
+    }
+
+    class PolymerIterator implements Iterator<Node<?>> {
+
+        Node<?> current;
+
+        public PolymerIterator() {
+            current = start;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current.getNext() != null;
+        }
+
+        @Override
+        public Node<?> next() {
+            return current.getNext();
+        }
     }
 }
