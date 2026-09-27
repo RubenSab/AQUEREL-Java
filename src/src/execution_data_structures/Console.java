@@ -13,7 +13,7 @@ public class Console {
         return inputScanner.nextLine();
     }
 
-    public void printOutput(String output) {
+    public static void printOutput(String output) {
         System.out.println(output);
     }
 }

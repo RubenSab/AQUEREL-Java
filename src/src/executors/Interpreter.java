@@ -65,8 +65,11 @@ public class Interpreter {
         };
     }
 
-    public void interpret(Polymer polymer) {
+    public void interpret(Polymer polymer, String sandboxRoot) {
         mainPolymer = new MainPolymer(polymer);
+        nameSpace = new NameSpace();
+        console = new Console();
+        fileSystem = new FileSystem(sandboxRoot);
         while (mainPolymer.hasEnzyme()) {
             mainPolymer.setEnzyme(executeNodeAndGetNext(mainPolymer.getEnzyme()));
         }
@@ -75,5 +78,6 @@ public class Interpreter {
     private Node<?> executeNodeAndGetNext(Node<?> current) {
         System.out.println(current);
         return current.getNext();
+        /* TODO implement here a switch based on NodeContent. if it's an operation, route the execution in an util static class OperationsExecution with a method for each op */
     }
 }
