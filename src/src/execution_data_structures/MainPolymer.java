@@ -24,26 +24,6 @@ public class MainPolymer extends Polymer {
         this.enzyme = target;
     }
 
-    public void moveRight() {
-        enzyme = enzyme.getNext();
-    }
-
-    public void moveLeft() {
-        enzyme = enzyme.getPrev();
-    }
-
-    public void jumpTo(Node<?> target) {
-        enzyme = target;
-    }
-
-    public Node getRight() {
-        return enzyme.getNext();
-    }
-
-    public Node getLeft() {
-        return enzyme.getPrev();
-    }
-
     public void serialize() {}
 
     public void deserialize() {}
