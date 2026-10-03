@@ -77,6 +77,13 @@ public class Interpreter {
 
     private Node<?> executeNodeAndGetNext(Node<?> current) {
         System.out.println(current);
+        /*
+        * 1. check number of arguments
+        * 2. extract n. arguments
+        * 3. call a function passing the arguments
+        * */
+
+
         return current.getNext();
         /* TODO implement here a switch based on NodeContent. if it's an operation, route the execution in an util static class OperationsExecution with a method for each op */
     }
