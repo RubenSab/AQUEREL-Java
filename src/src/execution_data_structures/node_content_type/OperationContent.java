@@ -1,4 +1,4 @@
-package execution_data_structures.nodes.node_content_type;
+package execution_data_structures.node_content_type;
 
 
 import static utils.Utils.*;

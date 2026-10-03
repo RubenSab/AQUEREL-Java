@@ -1,7 +1,7 @@
-package execution_data_structures;
+package execution_data_structures.context;
 
-import execution_data_structures.nodes.Node;
-import execution_data_structures.nodes.Polymer;
+import execution_data_structures.Node;
+import execution_data_structures.Polymer;
 
 public class MainPolymer extends Polymer {
     private Node<?> enzyme;

@@ -1,8 +1,8 @@
 package utils;
 
-import execution_data_structures.nodes.node_content_type.NameContent;
-import execution_data_structures.nodes.node_content_type.NodeContent;
-import execution_data_structures.nodes.node_content_type.NumberContent;
+import execution_data_structures.node_content_type.NameContent;
+import execution_data_structures.node_content_type.NodeContent;
+import execution_data_structures.node_content_type.NumberContent;
 
 import java.util.ArrayList;
 import java.util.List;

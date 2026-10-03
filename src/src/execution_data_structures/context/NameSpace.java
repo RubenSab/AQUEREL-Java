@@ -1,6 +1,6 @@
-package execution_data_structures;
+package execution_data_structures.context;
 
-import execution_data_structures.nodes.Polymer;
+import execution_data_structures.Polymer;
 
 import java.util.HashMap;
 import java.util.Map;

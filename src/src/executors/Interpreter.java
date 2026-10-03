@@ -1,9 +1,9 @@
 package executors;
 
-import execution_data_structures.*;
-import execution_data_structures.nodes.Node;
-import execution_data_structures.nodes.node_content_type.*;
-import execution_data_structures.nodes.Polymer;
+import execution_data_structures.Node;
+import execution_data_structures.context.*;
+import execution_data_structures.node_content_type.*;
+import execution_data_structures.Polymer;
 import utils.Utils;
 
 import java.nio.file.Files;
@@ -13,11 +13,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Interpreter {
-    private MainPolymer mainPolymer;
-    private NameSpace nameSpace;
-    private Console console;
-    private FileSystem fileSystem;
-    private Clock clock;
+    private Context context;
 
     public static Polymer parse(String filename) throws Exception {
         List<String> lines = Files.readAllLines(Paths.get(filename));
@@ -66,25 +62,34 @@ public class Interpreter {
     }
 
     public void interpret(Polymer polymer, String sandboxRoot) {
-        mainPolymer = new MainPolymer(polymer);
-        nameSpace = new NameSpace();
-        console = new Console();
-        fileSystem = new FileSystem(sandboxRoot);
+        MainPolymer mainPolymer = new MainPolymer(polymer);
+        NameSpace nameSpace = new NameSpace();
+        Console console = new Console();
+        FileSystem fileSystem = new FileSystem(sandboxRoot);
+        Context context = new Context(mainPolymer, nameSpace, console, fileSystem);
         while (mainPolymer.hasEnzyme()) {
-            mainPolymer.setEnzyme(executeNodeAndGetNext(mainPolymer.getEnzyme()));
+            mainPolymer.setEnzyme(executeNodeAndGetNext(mainPolymer.getEnzyme(), context));
         }
     }
 
-    private Node<?> executeNodeAndGetNext(Node<?> current) {
+    private Node<?> executeNodeAndGetNext(Node<?> current, Context context) {
         System.out.println(current);
+        context.mainPolymer().extract_node(current); /*stud, check signature and extract args instead*/
+        switch (current.getContent()) {
+            case OperationContent operation:
+                return current.getNext();
+            case BracketContent bracket:
+                return current.getNext();
+            case NameContent name:
+                return current.getNext();
+            default:
+                return current.getNext();
+        }
         /*
         * 1. check number of arguments
         * 2. extract n. arguments
         * 3. call a function passing the arguments
         * */
-
-
-        return current.getNext();
         /* TODO implement here a switch based on NodeContent. if it's an operation, route the execution in an util static class OperationsExecution with a method for each op */
     }
 }

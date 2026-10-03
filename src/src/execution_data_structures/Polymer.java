@@ -1,4 +1,4 @@
-package execution_data_structures.nodes;
+package execution_data_structures;
 
 public class Polymer {
     private Node<?> start;

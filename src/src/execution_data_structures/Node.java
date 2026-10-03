@@ -1,6 +1,6 @@
-package execution_data_structures.nodes;
+package execution_data_structures;
 
-import execution_data_structures.nodes.node_content_type.NodeContent;
+import execution_data_structures.node_content_type.NodeContent;
 
 public class Node<T extends NodeContent<?>> {
     private Node<?> next;

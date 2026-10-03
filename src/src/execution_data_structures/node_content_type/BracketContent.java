@@ -1,6 +1,6 @@
-package execution_data_structures.nodes.node_content_type;
+package execution_data_structures.node_content_type;
 
-import execution_data_structures.nodes.Node;
+import execution_data_structures.Node;
 
 public enum BracketContent implements NodeContent<BracketContent> {
     OPEN("("),
