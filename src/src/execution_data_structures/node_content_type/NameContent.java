@@ -15,6 +15,6 @@ public class NameContent implements NodeContent<String> {
 
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 }

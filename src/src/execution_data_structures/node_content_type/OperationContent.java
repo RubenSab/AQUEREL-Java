@@ -1,6 +1,10 @@
 package execution_data_structures.node_content_type;
 
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
+
 import static utils.Utils.*;
 
 public enum OperationContent implements NodeContent<OperationContent> {
@@ -60,6 +64,26 @@ public enum OperationContent implements NodeContent<OperationContent> {
     NSPACE("NSPACE", ARG_LESS_SIGNATURE),
     LEN("len", UNARY_GENERIC_SIGNATURE);
 
+    public static final Set<String> OP_NAMES = new HashSet<>(Arrays.asList(
+            // binary num op
+            "+", "-", "*", "/", "^", "round",
+            "==", "!=", ">", "<", ">=", "<=",
+            "and", "or", "xor",
+            // unary num op
+            "floor", "ceil", "not",
+            // string op
+            "getchar", "join",
+            // polymer op
+            "append", "replace", "splice", "remove", "retrieve", "run",
+            // context op (stub)
+            "save", "load",
+            // others
+            "dup", "ldrop", "rdrop", "pick", "throw", "mainlen",
+            "=", "exists", "del", "resolve", "type", "tostr", "tonum",
+            "print", "input", "time", "rand", "seed",
+            "MAINSEQ", "NSPACE", "len"
+    ));
+
     private final String token;
     private final Class<?>[] signature;
 
@@ -92,6 +116,6 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
     @Override
     public String toString() {
-        return token.toString();
+        return token;
     }
 }

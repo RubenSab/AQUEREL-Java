@@ -32,6 +32,6 @@ public enum BracketContent implements NodeContent<BracketContent> {
 
     @Override
     public String toString() {
-        return token.toString();
+        return token;
     }
 }

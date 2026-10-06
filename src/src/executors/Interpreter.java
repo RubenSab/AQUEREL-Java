@@ -8,11 +8,12 @@ import utils.Utils;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import static execution_data_structures.node_content_type.BracketContent.OPEN;
+import static execution_data_structures.node_content_type.BracketContent.*;
 
 public class Interpreter {
     private Context context;
@@ -50,17 +51,20 @@ public class Interpreter {
         return parsed;
     }
 
-    private static NodeContent tokenToContent(String token) {
-        return switch (token) {
-            case "(" -> OPEN;
-            case ")" -> BracketContent.CLOSED;
-            case String t when Utils.isNumeric(t) -> new NumberContent(token);
-            case String t when t.startsWith("'") && t.endsWith("'") ->
-                    new StringContent(t.substring(1, t.length()-1));
-            case String t when Arrays.asList(OperationContent.values()).contains(t) ->
-                    OperationContent.fromToken(t);
-            default -> new NameContent(token);
-        };
+    private static NodeContent<?> tokenToContent(String token) {
+        if (token.equals("(")) {
+            return OPEN;
+        } else if (token.equals(")")) {
+            return CLOSED;
+        } else if (Utils.isNumeric(token)) {
+            return new NumberContent(token);
+        } else if (token.startsWith("'") && token.endsWith("'")) {
+            return new StringContent(token.substring(1, token.length()-1));
+        } else if (OperationContent.OP_NAMES.contains(token)) {
+            return OperationContent.fromToken(token);
+        } else {
+            return new NameContent(token);
+        }
     }
 
     public void interpret(Polymer polymer, String sandboxRoot) {
@@ -93,7 +97,21 @@ public class Interpreter {
                 return polymer.getStart();
 
             case OperationContent operation:
-                return old_next; /* stub */
+                MainPolymer mainPolymer = context.mainPolymer();
+                mainPolymer.extract_node(current);
+                Class<?>[] signature = operation.getSignature();
+                Node<?> prev = old_prev;
+                List<NodeContent<?>> args = new ArrayList<>();
+                for (int i=0; i<signature.length; i++) {
+                    Node<?> prev_prev = prev.getPrev();
+                    args.addFirst(mainPolymer.extract_node(prev).getContent());
+                    prev = prev_prev;
+                }
+                for (int i=0; i<signature.length; i++) {
+                    if (!signature[i].isInstance(args.get(i))) {
+                        ExceptionLogger.logInvalidArgs(operation, args.toString());
+                    }
+                }
 
             default:
                 return old_next;
