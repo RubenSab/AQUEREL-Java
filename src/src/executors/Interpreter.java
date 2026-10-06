@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import static execution_data_structures.node_content_type.BracketContent.OPEN;
+
 public class Interpreter {
     private Context context;
 
@@ -50,7 +52,7 @@ public class Interpreter {
 
     private static NodeContent tokenToContent(String token) {
         return switch (token) {
-            case "(" -> BracketContent.OPEN;
+            case "(" -> OPEN;
             case ")" -> BracketContent.CLOSED;
             case String t when Utils.isNumeric(t) -> new NumberContent(token);
             case String t when t.startsWith("'") && t.endsWith("'") ->
@@ -68,22 +70,33 @@ public class Interpreter {
         FileSystem fileSystem = new FileSystem(sandboxRoot);
         Context context = new Context(mainPolymer, nameSpace, console, fileSystem);
         while (mainPolymer.hasEnzyme()) {
-            mainPolymer.setEnzyme(executeNodeAndGetNext(mainPolymer.getEnzyme(), context));
+            Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme(), context);
+            mainPolymer.setEnzyme(next);
         }
     }
 
     private Node<?> executeNodeAndGetNext(Node<?> current, Context context) {
         System.out.println(current);
-        context.mainPolymer().extract_node(current); /*stud, check signature and extract args instead*/
+        Node<?> old_next = current.getNext();
+        Node<?> old_prev = current.getPrev();
         switch (current.getContent()) {
-            case OperationContent operation:
-                return current.getNext();
             case BracketContent bracket:
-                return current.getNext();
+                if (bracket.getValue() == OPEN) {
+                    return bracket.getCorresponding().getNext();
+                } else {
+                    return old_next;
+                }
+
             case NameContent name:
-                return current.getNext();
+                Polymer polymer = context.nameSpace().retrieve(name.getValue());
+                context.mainPolymer().replace_node_with_polymer(current, polymer);
+                return polymer.getStart();
+
+            case OperationContent operation:
+                return old_next; /* stub */
+
             default:
-                return current.getNext();
+                return old_next;
         }
         /*
         * 1. check number of arguments

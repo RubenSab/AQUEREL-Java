@@ -1,6 +1,7 @@
 package execution_data_structures.context;
 
 import execution_data_structures.Polymer;
+import executors.ExceptionLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,9 @@ public class NameSpace {
     }
 
     public void unmap(String name) {
+        if (!space.containsKey(name)) {
+            ExceptionLogger.logUndefinedPolymer(name);
+        }
         space.remove(name);
     }
 
@@ -24,7 +28,10 @@ public class NameSpace {
         return space.containsKey(name);
     }
 
-    public Polymer get(String name) {
+    public Polymer retrieve(String name) {
+        if (!space.containsKey(name)) {
+            ExceptionLogger.logUndefinedPolymer(name);
+        }
         return space.get(name);
     }
 }

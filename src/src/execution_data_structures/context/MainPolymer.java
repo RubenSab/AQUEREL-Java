@@ -7,6 +7,7 @@ public class MainPolymer extends Polymer {
     private Node<?> enzyme;
     
     public MainPolymer(Polymer polymer) {
+        super(polymer.getStart(), polymer.getEnd());
         this.enzyme = polymer.getStart();
     }
 
@@ -25,4 +26,9 @@ public class MainPolymer extends Polymer {
     public void serialize() {}
 
     public void deserialize() {}
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

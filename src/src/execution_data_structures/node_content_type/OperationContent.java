@@ -32,7 +32,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
     REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}),
     SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}),
     REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}),
-    GET("get", new Class[]{NumberContent.class, BracketContent.class}),
+    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}),
     RUN("run", new Class[]{BracketContent.class}),
     /* context op (stub) */
     SAVE("save", new Class[]{}),
