@@ -29,6 +29,19 @@ public class MainPolymer extends Polymer {
 
     @Override
     public String toString() {
-        return super.toString();
+        if (start == null) return "";
+        StringBuilder sb = new StringBuilder();
+        Node<?> node = start;
+        while (node != null) {
+            if (enzyme != null && enzyme.equals(node)) {
+                sb.append("[" + node.getContent().toString() + "]");
+            } else {
+                sb.append(node.getContent().toString());
+            }
+
+            if (node.getNext() != null) sb.append(" -> ");
+            node = node.getNext();
+        }
+        return sb.toString();
     }
 }

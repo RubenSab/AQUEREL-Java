@@ -1,8 +1,8 @@
 package execution_data_structures;
 
 public class Polymer {
-    private Node<?> start;
-    private Node<?> end;
+    protected Node<?> start;
+    protected Node<?> end;
 
     public Polymer() {}
 
@@ -12,7 +12,7 @@ public class Polymer {
     }
 
     public Polymer(Node<?> node) {
-        new Polymer(node, node);
+        this(node, node);
     }
 
     @Override

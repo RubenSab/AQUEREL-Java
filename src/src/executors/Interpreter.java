@@ -9,7 +9,6 @@ import utils.Utils;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -72,15 +71,15 @@ public class Interpreter {
         NameSpace nameSpace = new NameSpace();
         Console console = new Console();
         FileSystem fileSystem = new FileSystem(sandboxRoot);
-        Context context = new Context(mainPolymer, nameSpace, console, fileSystem);
+        this.context = new Context(mainPolymer, nameSpace, console, fileSystem);
         while (mainPolymer.hasEnzyme()) {
-            Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme(), context);
+            Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme());
             mainPolymer.setEnzyme(next);
+            System.out.println(mainPolymer);
         }
     }
 
-    private Node<?> executeNodeAndGetNext(Node<?> current, Context context) {
-        System.out.println(current);
+    private Node<?> executeNodeAndGetNext(Node<?> current) {
         Node<?> old_next = current.getNext();
         Node<?> old_prev = current.getPrev();
         switch (current.getContent()) {
@@ -98,9 +97,8 @@ public class Interpreter {
 
             case OperationContent operation:
                 MainPolymer mainPolymer = context.mainPolymer();
-                mainPolymer.extract_node(current);
                 Class<?>[] signature = operation.getSignature();
-                Node<?> prev = old_prev;
+                Node<?> prev = old_prev; /* skip current node (the operation's one), extract it later */
                 List<NodeContent<?>> args = new ArrayList<>();
                 for (int i=0; i<signature.length; i++) {
                     Node<?> prev_prev = prev.getPrev();
@@ -112,15 +110,13 @@ public class Interpreter {
                         ExceptionLogger.logInvalidArgs(operation, args.toString());
                     }
                 }
+                /* replace current node with operation's result */
+                /* stub */
+                Polymer result = new Polymer(new Node<>(new NumberContent(1)));
+                mainPolymer.replace_node_with_polymer(current, result);
 
             default:
                 return old_next;
         }
-        /*
-        * 1. check number of arguments
-        * 2. extract n. arguments
-        * 3. call a function passing the arguments
-        * */
-        /* TODO implement here a switch based on NodeContent. if it's an operation, route the execution in an util static class OperationsExecution with a method for each op */
     }
 }
