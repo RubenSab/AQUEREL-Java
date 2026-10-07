@@ -111,10 +111,7 @@ public class Interpreter {
                     }
                 }
                 /* replace current node with operation's result */
-                /* stub */
-                Polymer result = new Polymer(new Node<>(new NumberContent(1)));
-                mainPolymer.replace_node_with_polymer(current, result);
-
+                mainPolymer.replace_node_with_polymer(current, operation.computeResult(args, context));
             default:
                 return old_next;
         }
