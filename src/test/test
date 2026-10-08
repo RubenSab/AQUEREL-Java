@@ -1,1 +1,1 @@
-'a' dup
+3 'a' 'b' join 4

@@ -3,6 +3,7 @@ package executors;
 import execution_data_structures.node_content_type.NodeContent;
 import execution_data_structures.node_content_type.OperationContent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +28,8 @@ public class ExceptionLogger {
         System.exit(0);
     }
 
-    public static void logInvalidArgs(OperationContent op, String argsString) {
-        System.err.println(INTERPRETER_EX + "Invalid args " + argsString + " for operation " + op);
+    public static void logInvalidArgs(OperationContent op, List<NodeContent<?>> args) {
+        System.err.println(INTERPRETER_EX + "Invalid args " + args.stream().map(NodeContent::toString).collect(Collectors.joining(", ")) + " for operation " + op);
         System.exit(0);
     }
 }

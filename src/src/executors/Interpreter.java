@@ -98,20 +98,17 @@ public class Interpreter {
             case OperationContent operation:
                 MainPolymer mainPolymer = context.mainPolymer();
                 Class<?>[] signature = operation.getSignature();
-                Node<?> prev = old_prev; /* skip current node (the operation's one), extract it later */
-                List<Node<?>> args = new ArrayList<>();
-                for (int i=0; i<signature.length; i++) {
-                    Node<?> prev_prev = prev.getPrev();
-                    args.addFirst(mainPolymer.extract_node(prev));
-                    prev = prev_prev;
-                }
-                for (int i=0; i<signature.length; i++) {
-                    if (!signature[i].isInstance(args.get(i).getContent())) {
-                        ExceptionLogger.logInvalidArgs(operation, args.toString());
+                List<NodeContent<?>> args = new ArrayList<>();
+                Node<?> signatureScanner = current.getPrev();
+                for (int i=signature.length-1; i>0; i--) {
+                    args.addFirst(signatureScanner.getContent());
+                    if (!signatureScanner.getContent().getClass().equals(signature[i])) {
+                        ExceptionLogger.logInvalidArgs(operation, args);
                     }
+                    signatureScanner = signatureScanner.getPrev();
                 }
                 /* replace current node with operation's result */
-                mainPolymer.replace_node_with_polymer(current, operation.computeResult(args, context));
+                mainPolymer.replace_node_with_polymer(current, operation.computeResult(context));
             default:
                 return old_next;
         }

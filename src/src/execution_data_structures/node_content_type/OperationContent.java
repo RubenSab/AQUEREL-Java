@@ -83,11 +83,11 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
     private final String token;
     private final Class<?>[] signature;
-    private final Function<List<Node<?>>, Polymer> opMethod;
+    private final Function<Context, Polymer> opMethod;
     private final boolean contextful;
     private Context context;
 
-    OperationContent(String token, Class<?>[] signature, Function<List<Node<?>>, Polymer> op_method, boolean contextful) {
+    OperationContent(String token, Class<?>[] signature, Function<Context, Polymer> op_method, boolean contextful) {
         this.token = token;
         this.signature = signature;
         this.opMethod = op_method;
@@ -108,11 +108,11 @@ public enum OperationContent implements NodeContent<OperationContent> {
         return signature;
     }
 
-    public Polymer computeResult(List<Node<?>> args, Context context) {
+    public Polymer computeResult(Context context) {
         if (contextful) {
             this.context = context;
         }
-        return this.opMethod.apply(args);
+        return this.opMethod.apply(context);
     }
 
     public static OperationContent fromToken(String symbol) {
@@ -133,114 +133,170 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
         /* binary num op */
 
-        public static Polymer add(List<Node<?>> args) {
+        public static Polymer add(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).add((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).add((NumberContent) b.getContent())));
         }
 
-        public static Polymer sub(List<Node<?>> args) {
+        public static Polymer sub(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).sub((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).sub((NumberContent) b.getContent())));
         }
 
-        public static Polymer mul(List<Node<?>> args) {
+        public static Polymer mul(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).mul((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).mul((NumberContent) b.getContent())));
         }
 
-        public static Polymer div(List<Node<?>> args) {
+        public static Polymer div(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).div((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).div((NumberContent) b.getContent())));
         }
 
-        public static Polymer pow(List<Node<?>> args) {
+        public static Polymer pow(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).pow((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).pow((NumberContent) b.getContent())));
         }
 
-        public static Polymer round(List<Node<?>> args) {
+        public static Polymer round(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).round((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).round((NumberContent) b.getContent())));
         }
 
-        public static Polymer eq(List<Node<?>> args) {
+        public static Polymer eq(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).eq((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).eq((NumberContent) b.getContent())));
         }
 
-        public static Polymer neq(List<Node<?>> args) {
+        public static Polymer neq(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).neq((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).neq((NumberContent) b.getContent())));
         }
 
-        public static Polymer gt(List<Node<?>> args) {
+        public static Polymer gt(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).gt((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).gt((NumberContent) b.getContent())));
         }
 
-        public static Polymer lt(List<Node<?>> args) {
+        public static Polymer lt(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).lt((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).lt((NumberContent) b.getContent())));
         }
 
-        public static Polymer geq(List<Node<?>> args) {
+        public static Polymer geq(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).geq((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).geq((NumberContent) b.getContent())));
         }
 
-        public static Polymer leq(List<Node<?>> args) {
+        public static Polymer leq(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).leq((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).leq((NumberContent) b.getContent())));
         }
 
-        public static Polymer and(List<Node<?>> args) {
+        public static Polymer and(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).and((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).and((NumberContent) b.getContent())));
         }
 
-        public static Polymer or(List<Node<?>> args) {
+        public static Polymer or(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).or((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).or((NumberContent) b.getContent())));
         }
 
-        public static Polymer xor(List<Node<?>> args) {
+        public static Polymer xor(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
             return new Polymer(new Node<>(
-                    ((NumberContent) args.get(0).getContent()).xor((NumberContent) args.get(1).getContent())));
+                    ((NumberContent) a.getContent()).xor((NumberContent) b.getContent())));
         }
 
         /* unary num op */
 
-        public static Polymer floor(List<Node<?>> args) {
-            return new Polymer(new Node<>(((NumberContent) args.getFirst().getContent()).floor()));
+        public static Polymer floor(Context context) {
+            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
+            return new Polymer(new Node<>(((NumberContent) a.getContent()).floor()));
         }
 
-        public static Polymer ceil(List<Node<?>> args) {
-            return new Polymer(new Node<>(((NumberContent) args.getFirst().getContent()).ceil()));
+        public static Polymer ceil(Context context) {
+            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
+            return new Polymer(new Node<>(((NumberContent) a.getContent()).ceil()));
         }
 
-        public static Polymer not(List<Node<?>> args) {
-            return new Polymer(new Node<>(((NumberContent) args.getFirst().getContent()).not()));
+        public static Polymer not(Context context) {
+            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
+            return new Polymer(new Node<>(((NumberContent) a.getContent()).not()));
         }
 
         /* string op */
 
-        public static Polymer getchar(List<Node<?>> args) {
-            return new Polymer(new Node<>(((StringContent) args.get(1).getContent()).getchar(((Double) args.get(0).getContent().getValue()).intValue())));
+        public static Polymer getchar(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
+            return new Polymer(new Node<>(
+                    ((StringContent) b.getContent()).getchar(((Double) a.getContent().getValue()).intValue())));
         }
 
-        public static Polymer join(List<Node<?>> args) {
-            return new Polymer(new Node<>(((StringContent) args.get(0).getContent()).join((StringContent) args.get(1).getContent())));
+        public static Polymer join(Context context) {
+            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+            Node<?> a = b.getPrev();
+            context.mainPolymer().extract_polymer(a, b);
+            return new Polymer(new Node<>(
+                    ((StringContent) a.getContent()).join((StringContent) b.getContent())));
         }
 
         /* explicit main manipulation ops */
 
-        public static Polymer dup(List<Node<?>> args) {
+        public static Polymer dup(Context context) {
             return null;
         }
 
-        public static Polymer stub(List<Node<?>> args) {
+        public static Polymer stub(Context context) {
             System.out.println("not yet implemented");
-            return new Polymer(args);
+            return null;
         }
     }
 }
