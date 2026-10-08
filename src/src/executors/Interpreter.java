@@ -99,14 +99,14 @@ public class Interpreter {
                 MainPolymer mainPolymer = context.mainPolymer();
                 Class<?>[] signature = operation.getSignature();
                 Node<?> prev = old_prev; /* skip current node (the operation's one), extract it later */
-                List<NodeContent<?>> args = new ArrayList<>();
+                List<Node<?>> args = new ArrayList<>();
                 for (int i=0; i<signature.length; i++) {
                     Node<?> prev_prev = prev.getPrev();
-                    args.addFirst(mainPolymer.extract_node(prev).getContent());
+                    args.addFirst(mainPolymer.extract_node(prev));
                     prev = prev_prev;
                 }
                 for (int i=0; i<signature.length; i++) {
-                    if (!signature[i].isInstance(args.get(i))) {
+                    if (!signature[i].isInstance(args.get(i).getContent())) {
                         ExceptionLogger.logInvalidArgs(operation, args.toString());
                     }
                 }
