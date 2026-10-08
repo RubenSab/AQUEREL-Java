@@ -66,6 +66,9 @@ public class Interpreter {
     }
 
     public void interpret(Polymer polymer, String sandboxRoot) {
+        if (polymer == null) {
+            return;
+        }
         MainPolymer mainPolymer = new MainPolymer(polymer);
         NameSpace nameSpace = new NameSpace();
         Console console = new Console();
