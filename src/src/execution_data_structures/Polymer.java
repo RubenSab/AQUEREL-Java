@@ -1,5 +1,7 @@
 package execution_data_structures;
 
+import java.util.List;
+
 public class Polymer {
     protected Node<?> start;
     protected Node<?> end;
@@ -13,6 +15,10 @@ public class Polymer {
 
     public Polymer(Node<?> node) {
         this(node, node);
+    }
+
+    public Polymer(List<Node<?>> nodes) {
+        this(nodes.getFirst(), nodes.getLast());
     }
 
     @Override

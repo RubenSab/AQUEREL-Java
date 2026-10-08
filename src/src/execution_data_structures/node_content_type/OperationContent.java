@@ -38,42 +38,42 @@ public enum OperationContent implements NodeContent<OperationContent> {
     /* string ops */
     GETCHAR("getchar", new Class[]{NumberContent.class, StringContent.class}, OperationBehaviour::getchar, false),
     JOIN("join", new Class[]{StringContent.class, StringContent.class}, OperationBehaviour::join, false),
-    /* polymer ops */
-    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::add, false),
-    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::add, false),
-    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::add, false),
-    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::add, false),
-    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::add, false),
-    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::add, false),
-    /* context ops (stub) */
-    SAVE("save", new Class[]{}, OperationBehaviour::add, true),
-    LOAD("load", new Class[]{}, OperationBehaviour::add, true),
     /* explicit main manipulation ops */
-    DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::add, false),
-    LDROP("ldrop", ARG_LESS_SIGNATURE, OperationBehaviour::add, false),
-    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::add, false),
-    PICK("pick", ARG_LESS_SIGNATURE, OperationBehaviour::add, false),
-    THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::add, false),
+    DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::dup, true),
+    LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, true),
+    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
+    PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::stub, true),
+    THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::stub, true),
+    /* polymer ops */
+    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::stub, false),
+    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
+    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
+    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
+    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
+    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::stub, false),
     /* namespace ops */
-    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::add, true),
-    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::add, true),
-    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::add, true),
-    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::add, true),
+    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::stub, true),
+    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
+    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
+    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
     /* type and casting ops */
-    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::add, true),
-    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::add, false),
-    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::add, false),
+    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, true),
+    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, false),
+    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::stub, false),
     /* console ops */
-    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::add, true),
-    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::add, true),
+    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::stub, true),
+    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
     /* debugging ops */
-    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::add, true),
-    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::add, true),
+    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
+    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
     /* clock ops */
-    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::add, false),
-    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::add, false),
+    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::stub, false),
+    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::stub, false),
     /* polymorphic ops */
-    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::add, false);
+    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, false),
+    /* context ops (stub) */
+    SAVE("save", new Class[]{}, OperationBehaviour::stub, true),
+    LOAD("load", new Class[]{}, OperationBehaviour::stub, true);
 
     public static final Set<String> OP_NAMES = new HashSet<>(
             Arrays.stream(values())
@@ -85,12 +85,14 @@ public enum OperationContent implements NodeContent<OperationContent> {
     private final Class<?>[] signature;
     private final Function<List<Node<?>>, Polymer> opMethod;
     private final boolean contextful;
+    private Context context;
 
     OperationContent(String token, Class<?>[] signature, Function<List<Node<?>>, Polymer> op_method, boolean contextful) {
         this.token = token;
         this.signature = signature;
         this.opMethod = op_method;
         this.contextful = contextful;
+        this.context = null;
     }
 
     @Override
@@ -107,6 +109,9 @@ public enum OperationContent implements NodeContent<OperationContent> {
     }
 
     public Polymer computeResult(List<Node<?>> args, Context context) {
+        if (contextful) {
+            this.context = context;
+        }
         return this.opMethod.apply(args);
     }
 
@@ -225,6 +230,17 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
         public static Polymer join(List<Node<?>> args) {
             return new Polymer(new Node<>(((StringContent) args.get(0).getContent()).join((StringContent) args.get(1).getContent())));
+        }
+
+        /* explicit main manipulation ops */
+
+        public static Polymer dup(List<Node<?>> args) {
+            return null;
+        }
+
+        public static Polymer stub(List<Node<?>> args) {
+            System.out.println("not yet implemented");
+            return new Polymer(args);
         }
     }
 }
