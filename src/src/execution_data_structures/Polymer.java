@@ -1,6 +1,10 @@
 package execution_data_structures;
 
+import execution_data_structures.node_content_type.BracketContent;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Polymer {
     protected Node<?> start;
@@ -11,6 +15,8 @@ public class Polymer {
     public Polymer(Node<?> start, Node<?> end) {
         this.start = start;
         this.end = end;
+        start.setPrev(null);
+        end.setNext(null);
     }
 
     public Polymer(Node<?> node) {
@@ -40,6 +46,56 @@ public class Polymer {
 
     public Node<?> getStart() {
         return start;
+    }
+
+    public Node<?> getNext() {
+        return end.getNext();
+    }
+
+    public Node<?> getPrev() {
+        return start.getPrev();
+    }
+
+    public Polymer clone() { // AI
+        if (this.start == null) {
+            return new Polymer();
+        }
+        Polymer clonedPolymer = new Polymer();
+        // Map to keep track of: Original Node -> Cloned Node
+        // Stored on the Heap, not the call stack.
+        Map<Node<?>, Node<?>> nodeMap = new HashMap<>();
+        // PASS 1: Iterative linear pass to clone nodes & recreate next/prev chain
+        Node<?> current = this.start;
+        while (current != null) {
+            // Create isolated copy of node content
+            Node<?> clonedNode = new Node<>(current.getContent());
+            // Append to new polymer (wires up prev/next pointers iteratively)
+            clonedPolymer.append(clonedNode);
+            // Register in map
+            nodeMap.put(current, clonedNode);
+            // Advance linearly along original list
+            current = current.getNext();
+        }
+        // PASS 2: Iterative linear pass to wire up cross-references
+        current = this.start;
+        while (current != null) {
+            if (current.getContent() instanceof BracketContent bracket) {
+                Node<?> originalCorresponding = bracket.getCorresponding();
+
+                if (originalCorresponding != null) {
+                    // Fetch the cloned counterparts directly from the Map (O(1) heap lookups)
+                    Node<?> clonedBracketNode = nodeMap.get(current);
+                    Node<?> clonedCorrespondingNode = nodeMap.get(originalCorresponding);
+
+                    // Update the cloned bracket's reference
+                    BracketContent clonedContent = (BracketContent) clonedBracketNode.getContent();
+                    clonedContent.setCorresponding(clonedCorrespondingNode);
+                }
+            }
+            // Advance linearly
+            current = current.getNext();
+        }
+        return clonedPolymer;
     }
 
     public void append(Node<?> node) {

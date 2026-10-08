@@ -19,7 +19,6 @@ public class Interpreter {
 
     public static Polymer parse(String filename) throws Exception {
         List<String> lines = Files.readAllLines(Paths.get(filename));
-        String.join("\n", lines);
         if (lines.isEmpty()) {
             return null;
         }
@@ -98,13 +97,17 @@ public class Interpreter {
             case OperationContent operation:
                 Class<?>[] signature = operation.getSignature();
                 List<NodeContent<?>> args = new ArrayList<>();
-                Node<?> signatureScanner = current.getPrev();
-                for (int i=signature.length-1; i>0; i--) {
-                    args.addFirst(signatureScanner.getContent());
-                    if (!signatureScanner.getContent().getClass().equals(signature[i])) {
+                Node<?> argScanner = current.getPrev();
+                for (int i=signature.length-1; i>=0; i--) {
+                    if (argScanner != null) {
+                        args.addFirst(argScanner.getContent());
+                    } else {
                         ExceptionLogger.logInvalidArgs(operation, args);
                     }
-                    signatureScanner = signatureScanner.getPrev();
+                    if (!signature[i].isInstance(argScanner.getContent())) {
+                        ExceptionLogger.logInvalidArgs(operation, args);
+                    }
+                    argScanner = argScanner.getPrev();
                 }
                 return operation.getOpMethod().apply(context);
             default:

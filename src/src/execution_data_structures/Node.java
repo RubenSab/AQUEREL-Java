@@ -1,5 +1,6 @@
 package execution_data_structures;
 
+import execution_data_structures.node_content_type.BracketContent;
 import execution_data_structures.node_content_type.NodeContent;
 
 public class Node<T extends NodeContent<?>> {
@@ -13,10 +14,6 @@ public class Node<T extends NodeContent<?>> {
 
     public Node<?> getNext() {
         return next;
-    }
-
-    public boolean hasNext() {
-        return getNext() != null;
     }
 
     public Node<?> getPrev() {
@@ -35,8 +32,19 @@ public class Node<T extends NodeContent<?>> {
         this.prev = prev;
     }
 
-    public Node<?> execute() {
-        return null;
+    public Node<?> clone() {
+        return new Node<>(this.content);
+    }
+
+    public Polymer getCorrespondingPolymer() {
+        if (content instanceof BracketContent) {
+            if (content.equals(BracketContent.CLOSED)) {
+                return new Polymer(((BracketContent) content).getCorresponding(), this);
+            } else {
+                return new Polymer(this, ((BracketContent) content).getCorresponding());
+            }
+        }
+        return new Polymer(this);
     }
 
     @Override

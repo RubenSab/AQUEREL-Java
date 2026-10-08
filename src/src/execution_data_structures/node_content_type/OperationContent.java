@@ -5,11 +5,9 @@ import execution_data_structures.Node;
 import execution_data_structures.Polymer;
 import execution_data_structures.context.Context;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -284,24 +282,27 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
         public static Node<?> floor(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
-            Node<?> a = op.getPrev();
-            Node<?> result = new Node<>(((NumberContent) a.getContent()).floor());
+            Node<?> arg = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) arg.getContent()).floor());
+            context.mainPolymer().extract_node(arg);
             context.mainPolymer().replace_node_with_node(op, result);
             return result.getNext();
         }
 
         public static Node<?> ceil(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
-            Node<?> a = op.getPrev();
-            Node<?> result = new Node<>(((NumberContent) a.getContent()).ceil());
+            Node<?> arg = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) arg.getContent()).ceil());
+            context.mainPolymer().extract_node(arg);
             context.mainPolymer().replace_node_with_node(op, result);
             return result.getNext();
         }
 
         public static Node<?> not(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
-            Node<?> a = op.getPrev();
-            Node<?> result = new Node<>(((NumberContent) a.getContent()).not());
+            Node<?> arg = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) arg.getContent()).not());
+            context.mainPolymer().extract_node(arg);
             context.mainPolymer().replace_node_with_node(op, result);
             return result.getNext();
         }
@@ -333,10 +334,9 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
         public static Node<?> dup(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
-            Node<?> node = op.getPrev();
-            Node<?> result = new Node<>(node.getContent());
-            context.mainPolymer().replace_node_with_node(op, result);
-            return result.getNext();
+            Polymer arg = op.getPrev().getCorrespondingPolymer().clone();
+            context.mainPolymer().replace_node_with_polymer(op, arg);
+            return arg.getNext();
         }
 
         public static Node<?> stub(Context context) {

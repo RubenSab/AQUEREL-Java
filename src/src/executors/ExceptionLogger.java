@@ -3,8 +3,6 @@ package executors;
 import execution_data_structures.node_content_type.NodeContent;
 import execution_data_structures.node_content_type.OperationContent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,7 @@ public class ExceptionLogger {
     private static final String FILESYSTEM_EX = "Filesystem exception: ";
 
     public static void logUnmatchedBracket(int i) {
-        System.err.println(PARSER_EX + "Unmatched ')' at line " + i+1);
+        System.err.println(PARSER_EX + "Unmatched ')' at line " + (i+1));
         System.exit(0);
     }
 
@@ -29,7 +27,7 @@ public class ExceptionLogger {
     }
 
     public static void logInvalidArgs(OperationContent op, List<NodeContent<?>> args) {
-        System.err.println(INTERPRETER_EX + "Invalid args " + args.stream().map(NodeContent::toString).collect(Collectors.joining(", ")) + " for operation " + op);
+        System.err.println(INTERPRETER_EX + "Invalid args [" + args.stream().map(NodeContent::toString).collect(Collectors.joining(", ")) + "] for operation " + op);
         System.exit(0);
     }
 }
