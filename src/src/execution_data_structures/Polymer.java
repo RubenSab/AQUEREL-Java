@@ -171,6 +171,10 @@ public class Polymer {
         return new Polymer(start, end);
     }
 
+    public Polymer extract_polymer(Polymer polymer) {
+        return this.extract_polymer(polymer.start, polymer.end);
+    }
+
     public void replace_node_with_node(Node<?> target, Node<?> replacement) {
         if (target == start) {
             start = replacement;

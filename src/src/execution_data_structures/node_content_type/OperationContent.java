@@ -4,6 +4,7 @@ package execution_data_structures.node_content_type;
 import execution_data_structures.Node;
 import execution_data_structures.Polymer;
 import execution_data_structures.context.Context;
+import execution_data_structures.context.MainPolymer;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -39,8 +40,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
     JOIN("join", new Class[]{StringContent.class, StringContent.class}, OperationBehaviour::join),
     /* explicit main manipulation ops */
     DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::dup),
-    LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
-    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::ldrop),
+    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::rdrop),
     PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
     THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
     /* polymer ops */
@@ -105,10 +106,6 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
     public Function<Context, Node<?>> getOpMethod() {
         return opMethod;
-    }
-
-    public Node<?> computeResult(Context context) {
-        return this.opMethod.apply(context);
     }
 
     public static OperationContent fromToken(String symbol) {
@@ -337,6 +334,26 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Polymer arg = op.getPrev().getCorrespondingPolymer().clone();
             context.mainPolymer().replace_node_with_polymer(op, arg);
             return arg.getNext();
+        }
+
+        public static Node<?> ldrop(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Polymer arg = op.getPrev().getCorrespondingPolymer();
+            main.extract_node(op);
+            main.extract_polymer(arg);
+            return next;
+        }
+
+        public static Node<?> rdrop(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Polymer arg = op.getNext().getCorrespondingPolymer();
+            main.extract_node(op);
+            main.extract_polymer(arg);
+            return next;
         }
 
         public static Node<?> stub(Context context) {

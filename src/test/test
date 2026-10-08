@@ -1,2 +1,2 @@
-2 3 ^ dup
-(2 3 ^) dup
+'it doesn\'t work' ldrop 'it works'
+'it works' rdrop 'it doesn\'t work'
