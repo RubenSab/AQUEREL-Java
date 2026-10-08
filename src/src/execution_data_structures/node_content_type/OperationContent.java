@@ -5,10 +5,11 @@ import execution_data_structures.Node;
 import execution_data_structures.Polymer;
 import execution_data_structures.context.Context;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,64 +17,64 @@ import static utils.Utils.*;
 
 public enum OperationContent implements NodeContent<OperationContent> {
     /* binary num ops */
-    ADD("+", BINARY_NUM_SIGNATURE, OperationBehaviour::add, false),
-    SUB("-", BINARY_NUM_SIGNATURE, OperationBehaviour::sub, false),
-    MUL("*", BINARY_NUM_SIGNATURE, OperationBehaviour::mul, false),
-    DIV("/", BINARY_NUM_SIGNATURE, OperationBehaviour::div, false),
-    POW("^", BINARY_NUM_SIGNATURE, OperationBehaviour::pow, false),
-    ROUND("round", BINARY_NUM_SIGNATURE, OperationBehaviour::round, false),
-    EQ("==", BINARY_NUM_SIGNATURE, OperationBehaviour::eq, false),
-    NEQ("!=", BINARY_NUM_SIGNATURE, OperationBehaviour::neq, false),
-    GT(">", BINARY_NUM_SIGNATURE, OperationBehaviour::gt, false),
-    LT("<", BINARY_NUM_SIGNATURE, OperationBehaviour::lt, false),
-    GEQ(">=", BINARY_NUM_SIGNATURE, OperationBehaviour::geq, false),
-    LEQ("<=", BINARY_NUM_SIGNATURE, OperationBehaviour::leq, false),
-    AND("and", BINARY_NUM_SIGNATURE, OperationBehaviour::and, false),
-    OR("or", BINARY_NUM_SIGNATURE, OperationBehaviour::or, false),
-    XOR("xor", BINARY_NUM_SIGNATURE, OperationBehaviour::xor, false),
+    ADD("+", BINARY_NUM_SIGNATURE, OperationBehaviour::add),
+    SUB("-", BINARY_NUM_SIGNATURE, OperationBehaviour::sub),
+    MUL("*", BINARY_NUM_SIGNATURE, OperationBehaviour::mul),
+    DIV("/", BINARY_NUM_SIGNATURE, OperationBehaviour::div),
+    POW("^", BINARY_NUM_SIGNATURE, OperationBehaviour::pow),
+    ROUND("round", BINARY_NUM_SIGNATURE, OperationBehaviour::round),
+    EQ("==", BINARY_NUM_SIGNATURE, OperationBehaviour::eq),
+    NEQ("!=", BINARY_NUM_SIGNATURE, OperationBehaviour::neq),
+    GT(">", BINARY_NUM_SIGNATURE, OperationBehaviour::gt),
+    LT("<", BINARY_NUM_SIGNATURE, OperationBehaviour::lt),
+    GEQ(">=", BINARY_NUM_SIGNATURE, OperationBehaviour::geq),
+    LEQ("<=", BINARY_NUM_SIGNATURE, OperationBehaviour::leq),
+    AND("and", BINARY_NUM_SIGNATURE, OperationBehaviour::and),
+    OR("or", BINARY_NUM_SIGNATURE, OperationBehaviour::or),
+    XOR("xor", BINARY_NUM_SIGNATURE, OperationBehaviour::xor),
     /* unary num ops */
-    FLOOR("floor", UNARY_NUM_SIGNATURE, OperationBehaviour::floor, false),
-    CEIL("ceil", UNARY_NUM_SIGNATURE, OperationBehaviour::ceil, false),
-    NOT("not", UNARY_NUM_SIGNATURE, OperationBehaviour::not, false),
+    FLOOR("floor", UNARY_NUM_SIGNATURE, OperationBehaviour::floor),
+    CEIL("ceil", UNARY_NUM_SIGNATURE, OperationBehaviour::ceil),
+    NOT("not", UNARY_NUM_SIGNATURE, OperationBehaviour::not),
     /* string ops */
-    GETCHAR("getchar", new Class[]{NumberContent.class, StringContent.class}, OperationBehaviour::getchar, false),
-    JOIN("join", new Class[]{StringContent.class, StringContent.class}, OperationBehaviour::join, false),
+    GETCHAR("getchar", new Class[]{NumberContent.class, StringContent.class}, OperationBehaviour::getchar),
+    JOIN("join", new Class[]{StringContent.class, StringContent.class}, OperationBehaviour::join),
     /* explicit main manipulation ops */
-    DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::dup, true),
-    LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, true),
-    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
-    PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::stub, true),
-    THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::stub, true),
+    DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::dup),
+    LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
+    RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
+    THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
     /* polymer ops */
-    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::stub, false),
-    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
-    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
-    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
-    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub, false),
-    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::stub, false),
+    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::stub),
+    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
+    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
+    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
+    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
+    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::stub),
     /* namespace ops */
-    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::stub, true),
-    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
-    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
-    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::stub, true),
+    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::stub),
+    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
+    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
+    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
     /* type and casting ops */
-    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, true),
-    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, false),
-    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::stub, false),
+    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
+    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
+    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::stub),
     /* console ops */
-    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::stub, true),
-    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
+    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::stub),
+    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
     /* debugging ops */
-    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
-    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::stub, true),
+    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
     /* clock ops */
-    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::stub, false),
-    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::stub, false),
+    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
     /* polymorphic ops */
-    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub, false),
+    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
     /* context ops (stub) */
-    SAVE("save", new Class[]{}, OperationBehaviour::stub, true),
-    LOAD("load", new Class[]{}, OperationBehaviour::stub, true);
+    SAVE("save", new Class[]{}, OperationBehaviour::stub),
+    LOAD("load", new Class[]{}, OperationBehaviour::stub);
 
     public static final Set<String> OP_NAMES = new HashSet<>(
             Arrays.stream(values())
@@ -83,16 +84,12 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
     private final String token;
     private final Class<?>[] signature;
-    private final Function<Context, Polymer> opMethod;
-    private final boolean contextful;
-    private Context context;
+    private final Function<Context, Node<?>> opMethod;
 
-    OperationContent(String token, Class<?>[] signature, Function<Context, Polymer> op_method, boolean contextful) {
+    OperationContent(String token, Class<?>[] signature, Function<Context, Node<?>> opMethod) {
         this.token = token;
         this.signature = signature;
-        this.opMethod = op_method;
-        this.contextful = contextful;
-        this.context = null;
+        this.opMethod = opMethod;
     }
 
     @Override
@@ -108,10 +105,11 @@ public enum OperationContent implements NodeContent<OperationContent> {
         return signature;
     }
 
-    public Polymer computeResult(Context context) {
-        if (contextful) {
-            this.context = context;
-        }
+    public Function<Context, Node<?>> getOpMethod() {
+        return opMethod;
+    }
+
+    public Node<?> computeResult(Context context) {
         return this.opMethod.apply(context);
     }
 
@@ -130,171 +128,218 @@ public enum OperationContent implements NodeContent<OperationContent> {
     }
 
     private static class OperationBehaviour {
-
         /* binary num op */
 
-        public static Polymer add(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> add(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).add((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).add((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer sub(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> sub(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).sub((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).sub((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer mul(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> mul(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).mul((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).mul((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer div(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> div(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).div((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).div((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer pow(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> pow(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).pow((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).pow((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer round(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> round(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).round((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).round((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer eq(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> eq(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).eq((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).eq((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer neq(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> neq(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).neq((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).neq((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer gt(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> gt(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).gt((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).gt((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer lt(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> lt(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).lt((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).lt((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer geq(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> geq(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).geq((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).geq((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer leq(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> leq(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).leq((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).leq((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer and(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> and(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).and((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).and((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer or(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> or(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).or((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).or((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer xor(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> xor(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).xor((NumberContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((NumberContent) a.getContent()).xor((NumberContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
         /* unary num op */
 
-        public static Polymer floor(Context context) {
-            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
-            return new Polymer(new Node<>(((NumberContent) a.getContent()).floor()));
+        public static Node<?> floor(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> a = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).floor());
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer ceil(Context context) {
-            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
-            return new Polymer(new Node<>(((NumberContent) a.getContent()).ceil()));
+        public static Node<?> ceil(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> a = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).ceil());
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer not(Context context) {
-            Node<?> a = context.mainPolymer().getEnzyme().getPrev();
-            return new Polymer(new Node<>(((NumberContent) a.getContent()).not()));
+        public static Node<?> not(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> a = op.getPrev();
+            Node<?> result = new Node<>(((NumberContent) a.getContent()).not());
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
         /* string op */
 
-        public static Polymer getchar(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> getchar(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(
+                    ((StringContent) b.getContent()).getchar(((Double) a.getContent().getValue()).intValue()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((StringContent) b.getContent()).getchar(((Double) a.getContent().getValue()).intValue())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer join(Context context) {
-            Node<?> b = context.mainPolymer().getEnzyme().getPrev();
+        public static Node<?> join(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
+            Node<?> result = new Node<>(((StringContent) a.getContent()).join((StringContent) b.getContent()));
             context.mainPolymer().extract_polymer(a, b);
-            return new Polymer(new Node<>(
-                    ((StringContent) a.getContent()).join((StringContent) b.getContent())));
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
         /* explicit main manipulation ops */
 
-        public static Polymer dup(Context context) {
-            return null;
+        public static Node<?> dup(Context context) {
+            Node<?> op = context.mainPolymer().getEnzyme();
+            Node<?> node = op.getPrev();
+            Node<?> result = new Node<>(node.getContent());
+            context.mainPolymer().replace_node_with_node(op, result);
+            return result.getNext();
         }
 
-        public static Polymer stub(Context context) {
+        public static Node<?> stub(Context context) {
             System.out.println("not yet implemented");
             return null;
         }

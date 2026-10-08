@@ -73,15 +73,15 @@ public class Interpreter {
         FileSystem fileSystem = new FileSystem(sandboxRoot);
         this.context = new Context(mainPolymer, nameSpace, console, fileSystem);
         while (mainPolymer.hasEnzyme()) {
+            System.out.println(mainPolymer);
             Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme());
             mainPolymer.setEnzyme(next);
-            System.out.println(mainPolymer);
         }
+        System.out.println(mainPolymer);
     }
 
     private Node<?> executeNodeAndGetNext(Node<?> current) {
         Node<?> old_next = current.getNext();
-        Node<?> old_prev = current.getPrev();
         switch (current.getContent()) {
             case BracketContent bracket:
                 if (bracket.getValue() == OPEN) {
@@ -96,7 +96,6 @@ public class Interpreter {
                 return polymer.getStart();
 
             case OperationContent operation:
-                MainPolymer mainPolymer = context.mainPolymer();
                 Class<?>[] signature = operation.getSignature();
                 List<NodeContent<?>> args = new ArrayList<>();
                 Node<?> signatureScanner = current.getPrev();
@@ -107,8 +106,7 @@ public class Interpreter {
                     }
                     signatureScanner = signatureScanner.getPrev();
                 }
-                /* replace current node with operation's result */
-                mainPolymer.replace_node_with_polymer(current, operation.computeResult(context));
+                return operation.getOpMethod().apply(context);
             default:
                 return old_next;
         }
