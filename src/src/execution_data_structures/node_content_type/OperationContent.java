@@ -42,38 +42,38 @@ public enum OperationContent implements NodeContent<OperationContent> {
     DUP("dup", UNARY_GENERIC_SIGNATURE, OperationBehaviour::dup),
     LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::ldrop),
     RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::rdrop),
-    PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
-    THROW("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::stub),
+    PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::pick),
+    THROW_LEFT("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::throwLeft),
     /* polymer ops */
-    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::stub),
-    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
-    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
-    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
-    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::stub),
-    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::stub),
+    APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::append),
+    REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::replace),
+    SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::splice),
+    REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::remove),
+    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::retrieve),
+    RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::run),
     /* namespace ops */
-    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::stub),
-    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
-    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
-    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::stub),
+    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::assign),
+    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::exists),
+    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::del),
+    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::resolve),
     /* type and casting ops */
-    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
-    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
-    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::stub),
+    TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::type),
+    TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::toStr),
+    TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::toNum),
     /* console ops */
-    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::stub),
-    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::print),
+    INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::input),
     /* debugging ops */
-    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
-    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::mainSeq),
+    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::nSpace),
     /* clock ops */
-    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
-    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::stub),
+    NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::nanos),
+    EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::epochSec),
     /* polymorphic ops */
-    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::stub),
+    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::len),
     /* context ops (stub) */
-    SAVE("save", new Class[]{}, OperationBehaviour::stub),
-    LOAD("load", new Class[]{}, OperationBehaviour::stub);
+    SAVE("save", new Class[]{}, OperationBehaviour::save),
+    LOAD("load", new Class[]{}, OperationBehaviour::load);
 
     public static final Set<String> OP_NAMES = new HashSet<>(
             Arrays.stream(values())
@@ -354,6 +354,120 @@ public enum OperationContent implements NodeContent<OperationContent> {
             main.extract_node(op);
             main.extract_polymer(arg);
             return next;
+        }
+
+        public static Node<?> pick(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            Polymer to_pick = arg.getPrev().getCorrespondingPolymer();
+            for (int i=0; (i<((NumberContent) arg.getContent()).getValue() && to_pick.getPrev() != null); i++) {
+                to_pick = to_pick.getPrev().getCorrespondingPolymer();
+            }
+            main.extract_polymer(to_pick);
+            main.insert_polymer_after(op, to_pick);
+            main.extract_node(op);
+            main.extract_node(arg);
+            return next;
+        }
+
+        public static Node<?> throwLeft(Context context) {
+            return null;
+        }
+
+        /* polymer ops */
+
+        public static Node<?> append(Context context) {
+            return null;
+        }
+
+        public static Node<?> replace(Context context) {
+            return null;
+        }
+
+        public static Node<?> splice(Context context) {
+            return null;
+        }
+
+        public static Node<?> remove(Context context) {
+            return null;
+        }
+
+        public static Node<?> retrieve(Context context) {
+            return null;
+        }
+
+        public static Node<?> get(Context context) {
+            return null;
+        }
+
+        public static Node<?> run(Context context) {
+            return null;
+        }
+
+        public static Node<?> assign(Context context) {
+            return null;
+        }
+
+        public static Node<?> exists(Context context) {
+            return null;
+        }
+
+        public static Node<?> del(Context context) {
+            return null;
+        }
+
+        public static Node<?> resolve(Context context) {
+            return null;
+        }
+
+        public static Node<?> type(Context context) {
+            return null;
+        }
+
+        public static Node<?> toStr(Context context) {
+            return null;
+        }
+
+        public static Node<?> toNum(Context context) {
+            return null;
+        }
+
+        public static Node<?> print(Context context) {
+            return null;
+        }
+
+        public static Node<?> input(Context context) {
+            return null;
+        }
+
+        public static Node<?> mainSeq(Context context) {
+            return null;
+        }
+
+        public static Node<?> nSpace(Context context) {
+            return null;
+        }
+
+        public static Node<?> nanos(Context context) {
+            return null;
+        }
+
+        public static Node<?> epochSec(Context context) {
+            return null;
+        }
+
+        public static Node<?> len(Context context) {
+            return null;
+        }
+
+        public static Node<?> save(Context context) {
+            return null;
+        }
+
+        public static Node<?> load(Context context) {
+            return null;
         }
 
         public static Node<?> stub(Context context) {

@@ -15,8 +15,6 @@ public class Polymer {
     public Polymer(Node<?> start, Node<?> end) {
         this.start = start;
         this.end = end;
-        start.setPrev(null);
-        end.setNext(null);
     }
 
     public Polymer(Node<?> node) {
