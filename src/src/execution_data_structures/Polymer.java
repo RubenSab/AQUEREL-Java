@@ -30,9 +30,9 @@ public class Polymer {
         if (start == null) return "";
         StringBuilder sb = new StringBuilder();
         Node<?> node = start;
-        while (node != null) {
+        while (node != null && start == end && node == end) {
             sb.append(node.getContent().toString());
-            if (node.getNext() != null) sb.append(" -> ");
+            if (node.getNext() != null && node != end) sb.append(" -> ");
             node = node.getNext();
         }
         return sb.toString();
@@ -52,6 +52,15 @@ public class Polymer {
 
     public Node<?> getPrev() {
         return start.getPrev();
+    }
+
+    public void setNext(Node<?> node) {
+        this.end.setNext(node);
+
+    }
+
+    public void setPrev(Node<?> node) {
+        this.start.setPrev(node);
     }
 
     public Polymer clone() { // AI
@@ -109,7 +118,7 @@ public class Polymer {
         }
     }
 
-    public void insert_node_after(Node<?> target, Node<?> node) {
+    public void insertNodeAfter(Node<?> target, Node<?> node) {
         if (target.getNext() != null) {
             target.getNext().setPrev(node);
             node.setNext(target.getNext());
@@ -121,19 +130,37 @@ public class Polymer {
         }
     }
 
-    public void insert_polymer_after(Node<?> target, Polymer polymer) {
+    public void insertPolymerAfter(Node<?> target, Polymer polymer) {
+        Node<?> oldNext = target.getNext();
+        polymer.setNext(null);
+        polymer.setPrev(null);
         if (target.getNext() != null) {
             target.getNext().setPrev(polymer.getEnd());
             polymer.getEnd().setNext(target.getNext());
         }
-        target.setNext(polymer.getStart());
+        polymer.setNext(oldNext);
         polymer.getStart().setPrev(target);
         if (polymer.getEnd().getNext() == null) {
             end = polymer.getEnd();
         }
     }
 
-    public Node<?> extract_node(Node<?> node) {
+    public void insertPolymerBefore(Node<?> target, Polymer polymer) {
+        Node<?> oldPrev = target.getPrev();
+        polymer.setNext(null);
+        polymer.setPrev(null);
+        if (target.getPrev() != null) {
+            target.getPrev().setNext(polymer.getStart());
+            polymer.getStart().setPrev(target.getPrev());
+        }
+        polymer.setPrev(oldPrev);
+        polymer.getEnd().setNext(target);
+        if (polymer.getStart().getPrev() == null) {
+            start = polymer.getStart();
+        }
+    }
+
+    public Node<?> extractNode(Node<?> node) {
         Node<?> prev = node.getPrev();
         Node<?> next = node.getNext();
         if (prev != null) {
@@ -151,7 +178,7 @@ public class Polymer {
         return node;
     }
 
-    public Polymer extract_polymer(Node<?> start, Node<?> end) {
+    public Polymer extractPolymer(Node<?> start, Node<?> end) {
         Node<?> prev = start.getPrev();
         Node<?> next = end.getNext();
         if (prev != null) {
@@ -169,11 +196,11 @@ public class Polymer {
         return new Polymer(start, end);
     }
 
-    public Polymer extract_polymer(Polymer polymer) {
-        return this.extract_polymer(polymer.start, polymer.end);
+    public Polymer extractPolymer(Polymer polymer) {
+        return this.extractPolymer(polymer.start, polymer.end);
     }
 
-    public void replace_node_with_node(Node<?> target, Node<?> replacement) {
+    public void replaceNodeWithNode(Node<?> target, Node<?> replacement) {
         if (target == start) {
             start = replacement;
         }
@@ -192,7 +219,7 @@ public class Polymer {
         target.setPrev(null);
     }
 
-    public void replace_node_with_polymer(Node<?> target, Polymer replacement) {
+    public void replaceNodeWithPolymer(Node<?> target, Polymer replacement) {
         if (target==start) {
             start = replacement.getStart();
         }

@@ -1,1 +1,1 @@
-'a' 'b' ('c' 1) 2 pick
+'a' 'b' 'c' 'd' 'e' 'f' 2 throw

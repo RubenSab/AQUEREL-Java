@@ -43,7 +43,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
     LDROP("ldrop", UNARY_GENERIC_SIGNATURE, OperationBehaviour::ldrop),
     RDROP("rdrop", ARG_LESS_SIGNATURE, OperationBehaviour::rdrop),
     PICK("pick", UNARY_NUM_SIGNATURE, OperationBehaviour::pick),
-    THROW_LEFT("throw", UNARY_NUM_SIGNATURE, OperationBehaviour::throwLeft),
+    THROW_LEFT("throw", new Class[]{NodeContent.class, NumberContent.class}, OperationBehaviour::throwLeft),
     /* polymer ops */
     APPEND("append", new Class[]{NodeContent.class, BracketContent.class}, OperationBehaviour::append),
     REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::replace),
@@ -130,8 +130,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).add((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -140,8 +140,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).sub((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -150,8 +150,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).mul((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -160,8 +160,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).div((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -170,8 +170,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).pow((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -180,8 +180,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).round((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -190,8 +190,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).eq((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -200,8 +200,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).neq((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -210,8 +210,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).gt((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -220,8 +220,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).lt((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -230,8 +230,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).geq((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -240,8 +240,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).leq((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -250,8 +250,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).and((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -260,8 +260,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).or((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -270,8 +270,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((NumberContent) a.getContent()).xor((NumberContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -281,8 +281,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = context.mainPolymer().getEnzyme();
             Node<?> arg = op.getPrev();
             Node<?> result = new Node<>(((NumberContent) arg.getContent()).floor());
-            context.mainPolymer().extract_node(arg);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractNode(arg);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -290,8 +290,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = context.mainPolymer().getEnzyme();
             Node<?> arg = op.getPrev();
             Node<?> result = new Node<>(((NumberContent) arg.getContent()).ceil());
-            context.mainPolymer().extract_node(arg);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractNode(arg);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -299,8 +299,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = context.mainPolymer().getEnzyme();
             Node<?> arg = op.getPrev();
             Node<?> result = new Node<>(((NumberContent) arg.getContent()).not());
-            context.mainPolymer().extract_node(arg);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractNode(arg);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -312,8 +312,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(
                     ((StringContent) b.getContent()).getchar(((Double) a.getContent().getValue()).intValue()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -322,8 +322,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> b = op.getPrev();
             Node<?> a = b.getPrev();
             Node<?> result = new Node<>(((StringContent) a.getContent()).join((StringContent) b.getContent()));
-            context.mainPolymer().extract_polymer(a, b);
-            context.mainPolymer().replace_node_with_node(op, result);
+            context.mainPolymer().extractPolymer(a, b);
+            context.mainPolymer().replaceNodeWithNode(op, result);
             return result.getNext();
         }
 
@@ -332,7 +332,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
         public static Node<?> dup(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
             Polymer arg = op.getPrev().getCorrespondingPolymer().clone();
-            context.mainPolymer().replace_node_with_polymer(op, arg);
+            context.mainPolymer().replaceNodeWithPolymer(op, arg);
             return arg.getNext();
         }
 
@@ -341,8 +341,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = main.getEnzyme();
             Node<?> next = op.getNext();
             Polymer arg = op.getPrev().getCorrespondingPolymer();
-            main.extract_node(op);
-            main.extract_polymer(arg);
+            main.extractNode(op);
+            main.extractPolymer(arg);
             return next;
         }
 
@@ -351,8 +351,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = main.getEnzyme();
             Node<?> next = op.getNext();
             Polymer arg = op.getNext().getCorrespondingPolymer();
-            main.extract_node(op);
-            main.extract_polymer(arg);
+            main.extractNode(op);
+            main.extractPolymer(arg);
             return next;
         }
 
@@ -365,15 +365,30 @@ public enum OperationContent implements NodeContent<OperationContent> {
             for (int i=0; (i<((NumberContent) arg.getContent()).getValue() && to_pick.getPrev() != null); i++) {
                 to_pick = to_pick.getPrev().getCorrespondingPolymer();
             }
-            main.extract_polymer(to_pick);
-            main.insert_polymer_after(op, to_pick);
-            main.extract_node(op);
-            main.extract_node(arg);
+            main.extractPolymer(to_pick);
+            main.insertPolymerAfter(op, to_pick);
+            main.extractNode(op);
+            main.extractNode(arg);
             return next;
         }
 
         public static Node<?> throwLeft(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> index = op.getPrev();
+            if (((NumberContent) index.getContent()).getValue() != 0) {
+                Polymer to_throw = index.getPrev().getCorrespondingPolymer();
+                Polymer anchor = to_throw;
+                for (int i = 0; (i < ((NumberContent) index.getContent()).getValue() && anchor.getPrev()!=null); i++) {
+                    anchor = anchor.getPrev().getCorrespondingPolymer();
+                }
+                main.extractPolymer(to_throw);
+                main.insertPolymerBefore(anchor.getStart(), to_throw);
+            }
+            main.extractNode(op);
+            main.extractNode(index);
+            return next;
         }
 
         /* polymer ops */
@@ -406,6 +421,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
+        /* namespace ops */
+
         public static Node<?> assign(Context context) {
             return null;
         }
@@ -422,6 +439,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
+        /* type and casting ops */
+
         public static Node<?> type(Context context) {
             return null;
         }
@@ -434,6 +453,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
+        /* console ops */
+
         public static Node<?> print(Context context) {
             return null;
         }
@@ -441,6 +462,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
         public static Node<?> input(Context context) {
             return null;
         }
+
+        /* debugging ops */
 
         public static Node<?> mainSeq(Context context) {
             return null;
@@ -450,6 +473,8 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
+        /* clock ops */
+
         public static Node<?> nanos(Context context) {
             return null;
         }
@@ -458,20 +483,19 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
+        /* polymorphic ops */
+
         public static Node<?> len(Context context) {
             return null;
         }
+
+        /* context ops (stub) */
 
         public static Node<?> save(Context context) {
             return null;
         }
 
         public static Node<?> load(Context context) {
-            return null;
-        }
-
-        public static Node<?> stub(Context context) {
-            System.out.println("not yet implemented");
             return null;
         }
     }

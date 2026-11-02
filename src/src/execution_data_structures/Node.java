@@ -26,10 +26,16 @@ public class Node<T extends NodeContent<?>> {
 
     public void setNext(Node<?> next) {
         this.next = next;
+        if (next!=null) {
+            this.next.prev = this;
+        }
     }
 
     public void setPrev(Node<?> prev) {
         this.prev = prev;
+        if (prev!=null) {
+            this.prev.next = this;
+        }
     }
 
     public Node<?> clone() {

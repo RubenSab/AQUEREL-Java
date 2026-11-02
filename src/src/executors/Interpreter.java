@@ -94,7 +94,7 @@ public class Interpreter {
 
             case NameContent name:
                 Polymer polymer = context.nameSpace().retrieve(name.getValue());
-                context.mainPolymer().replace_node_with_polymer(current, polymer);
+                context.mainPolymer().replaceNodeWithPolymer(current, polymer);
                 return polymer.getStart();
 
             case OperationContent operation:
