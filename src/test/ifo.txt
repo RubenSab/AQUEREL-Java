@@ -1,0 +1,9 @@
+'if' (
+    3 pick     # Pick the argument to run the condition on
+    1 pick     # The condition and its argument got swapped in the step before, swap them again
+    run        # Run the condition
+    pick run   # Pick the 1th branch from right if the condition returned true, else the 0th from right
+    ldrop      # Drop the other branch (which sits on the left in both cases)
+) map
+
+2 ('positive' print) ('negative' print) (0 >=) if

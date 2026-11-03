@@ -1,3 +1,65 @@
+# branching construct inside main
+
+# 0 ('positive' print) ('negative' print) 2 pick 0 >= pick run ldrop
 
 
--2 ('positive' print) ('negative' print) 2 pick 0 > pick run ldrop
+
+# function implementing branching
+
+# 'check_sign' (
+#    ('positive' print)
+#    ('negative' print)
+#    2 pick 0 >= pick
+#    run ldrop
+# ) map
+
+# input tonum check_sign run
+
+
+
+# increment function
+
+# '++' (dup resolve 1 + map) map
+
+# 'i' 0 map
+# 'i' ++ run
+# 'i' ++ run
+# names!
+
+
+
+# unbounded loop
+
+# 'f' ('hi' print) map
+# (dup f run run) dup run run
+
+# or
+
+# (dup 'hi' print run) dup run
+
+
+
+# unbounded loop with growing counter
+
+# '++' (dup resolve 1 + map) map
+# 'i' 5 map
+
+# (dup 'i' ++ run i print run) dup run
+
+
+
+# bounded loop
+
+# '++' (dup resolve 1 + map) map
+# 'i' 5 map
+# 'function' ('i' ++ run i print) map
+# (dup function run run) dup run run
+
+
+'ife' (
+    run        # Run the condition
+    dup not 1 + pick ldrop
+    pick run   # Pick the 1th branch from right if the condition returned true, else the 0th from right
+) map
+
+('positive' print) ('negative' print) (4 4 ==) ife run

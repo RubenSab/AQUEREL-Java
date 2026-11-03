@@ -1,0 +1,14 @@
+'ife' (
+    run        # Run the condition
+    pick run   # Pick the 1th branch from right if the condition returned true, else the 0th from right
+    ldrop      # Drop the other branch (which sits on the left in both cases)
+) map
+
+'i' 0 map
+'loop' (
+    ('i' i 1 + map i print loop run) () (i 10 <) ife run
+) map
+
+loop run
+
+names!

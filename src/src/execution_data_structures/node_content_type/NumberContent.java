@@ -1,5 +1,7 @@
 package execution_data_structures.node_content_type;
 
+import java.util.Objects;
+
 public class NumberContent implements NodeContent<Double> {
 
     private final Double value;
@@ -60,11 +62,11 @@ public class NumberContent implements NodeContent<Double> {
     }
 
     public NumberContent eq(NumberContent other) {
-        return new NumberContent(this.value == other.getValue() ? 1 : 0);
+        return new NumberContent(Objects.equals(this.value, other.getValue()) ? 1 : 0);
     }
 
     public NumberContent neq(NumberContent other) {
-        return new NumberContent(this.value != other.getValue() ? 1 : 0);
+        return new NumberContent(!Objects.equals(this.value, other.getValue()) ? 1 : 0);
     }
 
     public NumberContent gt(NumberContent other) {

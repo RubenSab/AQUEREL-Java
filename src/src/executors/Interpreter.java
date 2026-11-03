@@ -27,10 +27,13 @@ public class Interpreter {
         Node prevNode = null;
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith("#")) {
-                break;
+                continue;
             }
             List<String> tokens = Utils.findallMatches("'(?:\\\\.|[^'\\\\])*'|[^\\s()]+|[()]", lines.get(i));
             for (String t : tokens) {
+                if (t.equals("#")) {
+                    break;
+                }
                 NodeContent content = tokenToContent(t);
                 Node<?> current = new Node<>(content);
                 parsed.append(current);
