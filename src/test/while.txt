@@ -1,0 +1,18 @@
+'ifelse' (
+    2 pick           # Pick the condition
+    run              # Run the condition on the right of the false branch
+    not pick ldrop   # Drop the branch not chosen by the condition
+    run              # Run the other branch
+) map
+
+'while' (
+    (3 pick dup 4 throw run)
+    (dup run while run)
+    (ldrop ldrop)
+    ifelse run
+) map
+
+'i' 0 map
+(i 10 <) ('i' i 1 + map i print) while run
+
+names!

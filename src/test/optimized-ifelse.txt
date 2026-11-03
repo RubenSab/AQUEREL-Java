@@ -1,0 +1,11 @@
+# optimization to be used in loops
+
+'ifelse' (
+    2 pick           # Pick the condition
+    run              # Run the condition on the right of the false branch
+    not pick ldrop   # Drop the branch not chosen by the condition
+    run              # Run the other branch
+) map
+
+(4 4 ==) ('positive' print) ('negative' print) ifelse run
+(4 5 ==) ('positive' print) ('negative' print) ifelse run

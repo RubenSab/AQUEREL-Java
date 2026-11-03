@@ -1,14 +1,22 @@
-'ife' (
-    run        # Run the condition
-    pick run   # Pick the 1th branch from right if the condition returned true, else the 0th from right
-    ldrop      # Drop the other branch (which sits on the left in both cases)
+'ifelse' (
+    2 pick           # Pick the condition
+    run              # Run the condition on the right of the false branch
+    not pick ldrop   # Drop the branch not chosen by the condition
+    run              # Run the other branch
+) map
+
+
+'while' (
+    (c run)
+    (f run while run)
+    ()
+    ifelse run
 ) map
 
 'i' 0 map
-'loop' (
-    ('i' i 1 + map i print loop run) () (i 10 <) ife run
-) map
-
-loop run
+(i 100 <) ('i' i 1 + map i print)
+'f' 1 pick map
+'c' 1 pick map
+while run
 
 names!
