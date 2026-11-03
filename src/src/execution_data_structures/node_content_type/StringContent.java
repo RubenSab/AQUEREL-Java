@@ -22,6 +22,11 @@ public class StringContent implements NodeContent<String> {
     }
 
     @Override
+    public String getTypeString() {
+        return "str";
+    }
+
+    @Override
     public String toString() {
         return "'" + value + "'";
     }

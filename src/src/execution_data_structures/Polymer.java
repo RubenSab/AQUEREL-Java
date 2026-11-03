@@ -30,9 +30,12 @@ public class Polymer {
         if (start == null) return "";
         StringBuilder sb = new StringBuilder();
         Node<?> node = start;
-        while (node != null && start == end && node == end) {
+        while (node != null) {
             sb.append(node.getContent().toString());
-            if (node.getNext() != null && node != end) sb.append(" -> ");
+            if (node.getNext() != null && node != end) sb.append(" ↔ ");
+            if (node == end) {
+                break;
+            }
             node = node.getNext();
         }
         return sb.toString();

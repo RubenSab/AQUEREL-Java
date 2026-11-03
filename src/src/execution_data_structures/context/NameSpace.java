@@ -5,6 +5,7 @@ import executors.ExceptionLogger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class NameSpace {
     private final Map<String, Polymer> space;
@@ -32,6 +33,15 @@ public class NameSpace {
         if (!space.containsKey(name)) {
             ExceptionLogger.logUndefinedPolymer(name);
         }
-        return space.get(name);
+        return space.get(name).clone();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder().append("\n--- namespace ---\n");
+        for (Map.Entry<String, Polymer> entry : space.entrySet()) {
+            sb.append(entry.getKey()).append(" ↦ ").append(entry.getValue()).append("\n");
+        }
+        return sb.append("-----------------\n").toString();
     }
 }

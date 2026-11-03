@@ -32,7 +32,7 @@ public class Interpreter {
                 Node<?> current = new Node<>(content);
                 parsed.append(current);
                 if (content instanceof BracketContent) {
-                    if (content.getValue().equals(BracketContent.CLOSED)) {
+                    if (((BracketContent) content).isClosed()) {
                         if (bracketStack.isEmpty()) {
                             ExceptionLogger.logUnmatchedBracket(i);
                         }
@@ -51,9 +51,9 @@ public class Interpreter {
 
     private static NodeContent<?> tokenToContent(String token) {
         if (token.equals("(")) {
-            return OPEN;
+            return new BracketContent("(");
         } else if (token.equals(")")) {
-            return CLOSED;
+            return new BracketContent(")");
         } else if (Utils.isNumeric(token)) {
             return new NumberContent(token);
         } else if (token.startsWith("'") && token.endsWith("'")) {
@@ -65,7 +65,7 @@ public class Interpreter {
         }
     }
 
-    public void interpret(Polymer polymer, String sandboxRoot) {
+    public void interpret(Polymer polymer, String sandboxRoot, boolean verbose) {
         if (polymer == null) {
             return;
         }
@@ -74,19 +74,25 @@ public class Interpreter {
         Console console = new Console();
         FileSystem fileSystem = new FileSystem(sandboxRoot);
         this.context = new Context(mainPolymer, nameSpace, console, fileSystem);
+        int i = 0;
         while (mainPolymer.hasEnzyme()) {
-            System.out.println(mainPolymer);
+            if (verbose) {
+                System.out.println(i + ":\t" + mainPolymer);
+            }
             Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme());
             mainPolymer.setEnzyme(next);
+            i ++;
         }
-        System.out.println(mainPolymer);
+        if (verbose) {
+            System.out.println(i + ":\t" + mainPolymer);
+        }
     }
 
     private Node<?> executeNodeAndGetNext(Node<?> current) {
         Node<?> old_next = current.getNext();
         switch (current.getContent()) {
             case BracketContent bracket:
-                if (bracket.getValue() == OPEN) {
+                if (bracket.isOpen()) {
                     return bracket.getCorresponding().getNext();
                 } else {
                     return old_next;
@@ -110,7 +116,7 @@ public class Interpreter {
                     if (!signature[i].isInstance(argScanner.getContent())) {
                         ExceptionLogger.logInvalidArgs(operation, args);
                     }
-                    argScanner = argScanner.getPrev();
+                    argScanner = argScanner.getCorrespondingPolymer().getPrev();
                 }
                 return operation.getOpMethod().apply(context);
             default:

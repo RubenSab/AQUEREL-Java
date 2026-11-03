@@ -44,7 +44,7 @@ public class Node<T extends NodeContent<?>> {
 
     public Polymer getCorrespondingPolymer() {
         if (content instanceof BracketContent) {
-            if (content.equals(BracketContent.CLOSED)) {
+            if (((BracketContent) content).isClosed()) {
                 return new Polymer(((BracketContent) content).getCorresponding(), this);
             } else {
                 return new Polymer(this, ((BracketContent) content).getCorresponding());

@@ -1,5 +1,7 @@
 package execution_data_structures.context;
 
+import execution_data_structures.node_content_type.NodeContent;
+
 import java.util.Scanner;
 
 public class Console {
@@ -15,5 +17,9 @@ public class Console {
 
     public static void printOutput(String output) {
         System.out.println(output);
+    }
+
+    public static void printOutput(NodeContent<?> content) {
+        System.out.print(content.toStringContent().getValue());
     }
 }

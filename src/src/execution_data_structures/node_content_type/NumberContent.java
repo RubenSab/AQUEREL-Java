@@ -26,6 +26,10 @@ public class NumberContent implements NodeContent<Double> {
         return value.toString();
     }
 
+    @Override
+    public String getTypeString() {
+        return "num";
+    }
 
     public NumberContent add(NumberContent other) {
         return new NumberContent(this.value + other.getValue());

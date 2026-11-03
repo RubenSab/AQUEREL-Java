@@ -3,6 +3,7 @@ package execution_data_structures.node_content_type;
 
 import execution_data_structures.Node;
 import execution_data_structures.Polymer;
+import execution_data_structures.context.Console;
 import execution_data_structures.context.Context;
 import execution_data_structures.context.MainPolymer;
 
@@ -49,31 +50,28 @@ public enum OperationContent implements NodeContent<OperationContent> {
     REPLACE("replace", new Class[]{NodeContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::replace),
     SPLICE("splice", new Class[]{BracketContent.class, NumberContent.class, BracketContent.class}, OperationBehaviour::splice),
     REMOVE("remove", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::remove),
-    GET("retrieve", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::retrieve),
+    GET("get", new Class[]{NumberContent.class, BracketContent.class}, OperationBehaviour::get),
     RUN("run", new Class[]{BracketContent.class}, OperationBehaviour::run),
     /* namespace ops */
-    ASSIGN("=", new Class[]{NameContent.class, NodeContent.class}, OperationBehaviour::assign),
-    EXISTS("exists", UNARY_NAME_SIGNATURE, OperationBehaviour::exists),
-    DEL("del", UNARY_NAME_SIGNATURE, OperationBehaviour::del),
-    RESOLVE("resolve", UNARY_NAME_SIGNATURE, OperationBehaviour::resolve),
+    MAP("map", new Class[]{StringContent.class, NodeContent.class}, OperationBehaviour::map),
+    EXISTS("exists", UNARY_STR_SIGNATURE, OperationBehaviour::exists),
+    UNMAP("unmap", UNARY_STR_SIGNATURE, OperationBehaviour::unmap),
+    RESOLVE("resolve", UNARY_STR_SIGNATURE, OperationBehaviour::resolve),
     /* type and casting ops */
     TYPE("type", UNARY_GENERIC_SIGNATURE, OperationBehaviour::type),
     TOSTR("tostr", UNARY_GENERIC_SIGNATURE, OperationBehaviour::toStr),
     TONUM("tonum", UNARY_STR_SIGNATURE, OperationBehaviour::toNum),
     /* console ops */
-    PRINT("print", UNARY_STR_SIGNATURE, OperationBehaviour::print),
+    PRINT("print", UNARY_GENERIC_SIGNATURE, OperationBehaviour::print),
     INPUT("input", ARG_LESS_SIGNATURE, OperationBehaviour::input),
     /* debugging ops */
-    MAINSEQ("MAINSEQ", ARG_LESS_SIGNATURE, OperationBehaviour::mainSeq),
-    NSPACE("NSPACE", ARG_LESS_SIGNATURE, OperationBehaviour::nSpace),
+    MAIN("main!", ARG_LESS_SIGNATURE, OperationBehaviour::debugPrintMain),
+    NAMES("names!", ARG_LESS_SIGNATURE, OperationBehaviour::debugPrintNamespace),
     /* clock ops */
     NANOS("nanos", ARG_LESS_SIGNATURE, OperationBehaviour::nanos),
     EPOCHSEC("epochsec", ARG_LESS_SIGNATURE, OperationBehaviour::epochSec),
     /* polymorphic ops */
-    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::len),
-    /* context ops (stub) */
-    SAVE("save", new Class[]{}, OperationBehaviour::save),
-    LOAD("load", new Class[]{}, OperationBehaviour::load);
+    LEN("len", UNARY_GENERIC_SIGNATURE, OperationBehaviour::len);
 
     public static final Set<String> OP_NAMES = new HashSet<>(
             Arrays.stream(values())
@@ -96,6 +94,11 @@ public enum OperationContent implements NodeContent<OperationContent> {
         return this;
     }
 
+    @Override
+    public String getTypeString() {
+        return "op";
+    }
+
     public String getToken() {
         return token;
     }
@@ -108,7 +111,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
         return opMethod;
     }
 
-    public static OperationContent fromToken(String symbol) {
+    public static OperationContent fromToken(String symbol) { // TODO: reduce complexity
         for (OperationContent op : values()) {
             if (op.getToken().equals(symbol)) {
                 return op;
@@ -418,59 +421,139 @@ public enum OperationContent implements NodeContent<OperationContent> {
         }
 
         public static Node<?> run(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> arg = op.getPrev();
+            Node<?> openBracket = ((BracketContent) arg.getContent()).getCorresponding();
+            Node<?> next = (openBracket.getNext() == arg) ? op.getNext() : openBracket.getNext();
+            main.extractNode(op);
+            main.extractNode(arg);
+            main.extractNode(openBracket);
+            return next;
         }
 
         /* namespace ops */
 
-        public static Node<?> assign(Context context) {
-            return null;
+        public static Node<?> map(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Polymer valuePolymer = op.getPrev().getCorrespondingPolymer();
+            Node<?> keyNode = valuePolymer.getPrev();
+            main.extractNode(op);
+            main.extractNode(keyNode);
+            main.extractPolymer(valuePolymer);
+            context.nameSpace().map(((StringContent) keyNode.getContent()).getValue(), valuePolymer);
+            return next;
         }
 
         public static Node<?> exists(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            main.replaceNodeWithNode(
+                    op,
+                    new Node<>(new NumberContent(
+                            context.nameSpace().check(((StringContent) arg.getContent()).getValue()) ? 1 : 0
+                    ))
+            );
+            main.extractNode(arg);
+            return next;
         }
 
-        public static Node<?> del(Context context) {
-            return null;
+        public static Node<?> unmap(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            context.nameSpace().unmap(((StringContent) arg.getContent()).getValue());
+            main.extractNode(op);
+            main.extractNode(arg);
+            return next;
         }
 
         public static Node<?> resolve(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> nameNode = op.getPrev();
+            main.replaceNodeWithPolymer(op, context.nameSpace().retrieve(((StringContent) nameNode.getContent()).getValue()));
+            main.extractNode(nameNode);
+            return next;
         }
 
         /* type and casting ops */
 
         public static Node<?> type(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Polymer arg = op.getPrev().getCorrespondingPolymer();
+            main.replaceNodeWithNode(op, new Node<>(new StringContent(arg.getEnd().getContent().getTypeString())));
+            main.extractPolymer(arg);
+            return next;
         }
 
         public static Node<?> toStr(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Polymer arg = op.getPrev().getCorrespondingPolymer();
+            main.replaceNodeWithNode(op, new Node<>(new StringContent(arg.toString())));
+            main.extractPolymer(arg);
+            return next;
         }
 
         public static Node<?> toNum(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            main.replaceNodeWithNode(op, new Node<>(new StringContent(arg.toString())));
+            main.extractNode(arg);
+            return next;
         }
 
         /* console ops */
 
         public static Node<?> print(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            Console.printOutput(arg.getContent());
+            main.extractNode(op);
+            main.extractNode(arg);
+            return next;
         }
 
         public static Node<?> input(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            main.replaceNodeWithNode(op, new Node<>(new StringContent(context.console().readInput())));
+            return next;
         }
 
         /* debugging ops */
 
-        public static Node<?> mainSeq(Context context) {
-            return null;
+        public static Node<?> debugPrintMain(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Console.printOutput(main.toString());
+            main.extractNode(op);
+            return next;
         }
 
-        public static Node<?> nSpace(Context context) {
-            return null;
+        public static Node<?> debugPrintNamespace(Context context) {
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Console.printOutput(context.nameSpace().toString());
+            main.extractNode(op);
+            return next;
         }
 
         /* clock ops */
@@ -483,19 +566,9 @@ public enum OperationContent implements NodeContent<OperationContent> {
             return null;
         }
 
-        /* polymorphic ops */
+        /* other */
 
         public static Node<?> len(Context context) {
-            return null;
-        }
-
-        /* context ops (stub) */
-
-        public static Node<?> save(Context context) {
-            return null;
-        }
-
-        public static Node<?> load(Context context) {
             return null;
         }
     }

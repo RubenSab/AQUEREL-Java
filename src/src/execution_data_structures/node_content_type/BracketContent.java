@@ -2,14 +2,11 @@ package execution_data_structures.node_content_type;
 
 import execution_data_structures.Node;
 
-public enum BracketContent implements NodeContent<BracketContent> {
-    OPEN("("),
-    CLOSED(")");
-
+public class BracketContent implements NodeContent<BracketContent> {
     private final String token;
     private Node<?> corresponding;
 
-    BracketContent(String token) {
+    public BracketContent(String token) {
         this.token = token;
     }
 
@@ -26,8 +23,22 @@ public enum BracketContent implements NodeContent<BracketContent> {
         return this;
     }
 
+    public boolean isOpen() {
+        return token.equals("(");
+    }
+
+    public boolean isClosed() {
+        return token.equals(")");
+    }
+
+    @Override
+    public String getTypeString() {
+        return "bracket";
+    }
+
     @Override
     public String toString() {
         return token;
     }
+
 }

@@ -14,6 +14,11 @@ public class NameContent implements NodeContent<String> {
     }
 
     @Override
+    public String getTypeString() {
+        return "name";
+    }
+
+    @Override
     public String toString() {
         return value;
     }

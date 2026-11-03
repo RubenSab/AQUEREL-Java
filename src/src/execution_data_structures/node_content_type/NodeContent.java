@@ -2,4 +2,9 @@ package execution_data_structures.node_content_type;
 
 public interface NodeContent<T> {
     T getValue();
+    String getTypeString();
+
+    default StringContent toStringContent() {
+        return new StringContent(getValue().toString());
+    }
 }

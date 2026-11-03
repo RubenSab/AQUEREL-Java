@@ -3,6 +3,7 @@ package utils;
 import execution_data_structures.node_content_type.NameContent;
 import execution_data_structures.node_content_type.NodeContent;
 import execution_data_structures.node_content_type.NumberContent;
+import execution_data_structures.node_content_type.StringContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class Utils {
     public static final Class<?>[] BINARY_NUM_SIGNATURE = {NumberContent.class, NumberContent.class};
     public static final Class<?>[] UNARY_NUM_SIGNATURE = {NumberContent.class};
     public static final Class<?>[] UNARY_NAME_SIGNATURE = {NameContent.class};
-    public static final Class<?>[] UNARY_STR_SIGNATURE = {NameContent.class};
+    public static final Class<?>[] UNARY_STR_SIGNATURE = {StringContent.class};
     public static final Class<?>[] UNARY_GENERIC_SIGNATURE = {NodeContent.class};
     public static final Class<?>[] ARG_LESS_SIGNATURE = {};
 
