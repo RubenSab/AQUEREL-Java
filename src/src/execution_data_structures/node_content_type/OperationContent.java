@@ -340,9 +340,10 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
         public static Node<?> dup(Context context) {
             Node<?> op = context.mainPolymer().getEnzyme();
-            Polymer arg = op.getPrev().getCorrespondingPolymer().clone();
-            context.mainPolymer().replaceNodeWithPolymer(op, arg);
-            return arg.getNext();
+            Node<?> next = op.getNext();
+            Polymer arg = op.getPrev().getCorrespondingPolymer();
+            context.mainPolymer().replaceNodeWithPolymer(op, arg.clone());
+            return next;
         }
 
         public static Node<?> ldrop(Context context) {

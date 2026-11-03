@@ -1,1 +1,1 @@
-'a\nb' print
+(dup f run) dup 2 1
