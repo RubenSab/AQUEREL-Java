@@ -1,18 +1,1 @@
-1 type print
-'a' type print
-(1) type print
-('a') type print
-
-'f' ('World!' print) map
-'a' 'Hello ' map
-
-names!
-
-a print
-'f' resolve run
-
-names!
-
-'f' unmap
-
-names!
+'a\nb' print

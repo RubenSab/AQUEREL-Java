@@ -77,14 +77,14 @@ public class Interpreter {
         int i = 0;
         while (mainPolymer.hasEnzyme()) {
             if (verbose) {
-                System.out.println(i + ":\t" + mainPolymer);
+                System.out.println("\n" + i + ":\t" + mainPolymer);
             }
             Node<?> next = executeNodeAndGetNext(mainPolymer.getEnzyme());
             mainPolymer.setEnzyme(next);
             i ++;
         }
         if (verbose) {
-            System.out.println(i + ":\t" + mainPolymer);
+            System.out.println("\n" + i + ":\t" + mainPolymer);
         }
     }
 

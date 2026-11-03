@@ -32,7 +32,7 @@ public class Polymer {
         Node<?> node = start;
         while (node != null) {
             sb.append(node.getContent().toString());
-            if (node.getNext() != null && node != end) sb.append(" ↔ ");
+            if (node.getNext() != null && node != end) sb.append(' ');
             if (node == end) {
                 break;
             }
@@ -239,5 +239,15 @@ public class Polymer {
         replacement.getStart().setPrev(target.getPrev());
         target.setNext(null);
         target.setPrev(null);
+    }
+
+    public int length() {
+        Node<?> cursor = start.getNext();
+        int length = 0;
+        while (cursor != null && cursor != end) {
+            cursor = cursor.getNext();
+            length ++;
+        }
+        return length;
     }
 }

@@ -40,4 +40,25 @@ public class Utils {
         return allMatches;
     }
 
+    public static String unescapeJava(String s) { // AI
+        StringBuilder sb = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c != '\\' || i == s.length() - 1) { sb.append(c); continue; }
+            char n = s.charAt(++i);
+            switch (n) {
+                case 'n'  -> sb.append('\n');
+                case 'r'  -> sb.append('\r');
+                case 't'  -> sb.append('\t');
+                case 'b'  -> sb.append('\b');
+                case 'f'  -> sb.append('\f');
+                case '\\' -> sb.append('\\');
+                case '\'' -> sb.append('\'');
+                case '"'  -> sb.append('"');
+                case 'u'  -> { sb.append((char) Integer.parseInt(s.substring(i + 1, i + 5), 16)); i += 4; }
+                default   -> sb.append(n);
+            }
+        }
+        return sb.toString();
+    }
 }

@@ -16,10 +16,6 @@ public class Console {
     }
 
     public static void printOutput(String output) {
-        System.out.println(output);
-    }
-
-    public static void printOutput(NodeContent<?> content) {
-        System.out.print(content.toStringContent().getValue());
+        System.out.print(output);
     }
 }

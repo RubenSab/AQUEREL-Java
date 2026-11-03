@@ -3,6 +3,7 @@ package execution_data_structures.node_content_type;
 
 import execution_data_structures.Node;
 import execution_data_structures.Polymer;
+import execution_data_structures.context.Clock;
 import execution_data_structures.context.Console;
 import execution_data_structures.context.Context;
 import execution_data_structures.context.MainPolymer;
@@ -122,6 +123,11 @@ public enum OperationContent implements NodeContent<OperationContent> {
 
     @Override
     public String toString() {
+        return token;
+    }
+
+    @Override
+    public String toPrintableString() {
         return token;
     }
 
@@ -510,7 +516,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = main.getEnzyme();
             Node<?> next = op.getNext();
             Node<?> arg = op.getPrev();
-            main.replaceNodeWithNode(op, new Node<>(new StringContent(arg.toString())));
+            main.replaceNodeWithNode(op, new Node<>(new NumberContent(arg.getContent().getValue().toString())));
             main.extractNode(arg);
             return next;
         }
@@ -521,10 +527,10 @@ public enum OperationContent implements NodeContent<OperationContent> {
             MainPolymer main = context.mainPolymer();
             Node<?> op = main.getEnzyme();
             Node<?> next = op.getNext();
-            Node<?> arg = op.getPrev();
-            Console.printOutput(arg.getContent());
+            Polymer arg = op.getPrev().getCorrespondingPolymer();
+            Console.printOutput(arg.getEnd().getContent().toPrintableString());
             main.extractNode(op);
-            main.extractNode(arg);
+            main.extractPolymer(arg);
             return next;
         }
 
@@ -559,17 +565,31 @@ public enum OperationContent implements NodeContent<OperationContent> {
         /* clock ops */
 
         public static Node<?> nanos(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            main.replaceNodeWithNode(op, new Node<>(new NumberContent(Clock.nanos())));
+            return next;
         }
 
         public static Node<?> epochSec(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            main.replaceNodeWithNode(op, new Node<>(new NumberContent(Clock.epochSecond())));
+            return next;
         }
 
         /* other */
 
         public static Node<?> len(Context context) {
-            return null;
+            MainPolymer main = context.mainPolymer();
+            Node<?> op = main.getEnzyme();
+            Node<?> next = op.getNext();
+            Node<?> arg = op.getPrev();
+            main.replaceNodeWithNode(op, new Node<>(new NumberContent(arg.getContent().length())));
+            main.extractNode(arg);
+            return next;
         }
     }
 }

@@ -1,5 +1,7 @@
 package execution_data_structures.node_content_type;
 
+import static utils.Utils.unescapeJava;
+
 public class StringContent implements NodeContent<String> {
 
     private final String value;
@@ -29,5 +31,15 @@ public class StringContent implements NodeContent<String> {
     @Override
     public String toString() {
         return "'" + value + "'";
+    }
+
+    @Override
+    public String toPrintableString() {
+        return unescapeJava(value);
+    }
+
+    @Override
+    public int length() {
+        return value.length();
     }
 }

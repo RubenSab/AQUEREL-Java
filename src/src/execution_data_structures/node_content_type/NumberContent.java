@@ -23,6 +23,9 @@ public class NumberContent implements NodeContent<Double> {
 
     @Override
     public String toString() {
+        if (value.intValue() == value) {
+            return String.format("%.0f", value);
+        }
         return value.toString();
     }
 
@@ -106,4 +109,8 @@ public class NumberContent implements NodeContent<Double> {
         return new NumberContent(this.value == 0 ? 1 : 0);
     }
 
+    @Override
+    public String toPrintableString() {
+        return this.toString();
+    }
 }

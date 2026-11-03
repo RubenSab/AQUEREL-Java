@@ -41,4 +41,13 @@ public class BracketContent implements NodeContent<BracketContent> {
         return token;
     }
 
+    @Override
+    public String toPrintableString() {
+        return corresponding.getCorrespondingPolymer().toString();
+    }
+
+    @Override
+    public int length() {
+        return corresponding.getCorrespondingPolymer().length();
+    }
 }

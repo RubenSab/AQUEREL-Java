@@ -39,7 +39,7 @@ public class MainPolymer extends Polymer {
                 sb.append(node.getContent().toString());
             }
 
-            if (node.getNext() != null) sb.append(" ↔ ");
+            if (node.getNext() != null) sb.append(' ');
             node = node.getNext();
         }
         return sb.toString();

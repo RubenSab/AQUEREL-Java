@@ -22,4 +22,9 @@ public class NameContent implements NodeContent<String> {
     public String toString() {
         return value;
     }
+
+    @Override
+    public String toPrintableString() {
+        return value;
+    }
 }
