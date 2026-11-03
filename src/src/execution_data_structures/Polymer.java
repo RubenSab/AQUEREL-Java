@@ -1,6 +1,7 @@
 package execution_data_structures;
 
 import execution_data_structures.node_content_type.BracketContent;
+import execution_data_structures.node_content_type.NodeContent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,56 +72,39 @@ public class Polymer {
             return new Polymer();
         }
         Polymer clonedPolymer = new Polymer();
-        // Map to keep track of: Original Node -> Cloned Node
         Map<Node<?>, Node<?>> nodeMap = new HashMap<>();
 
-        // PASS 1: Iterative linear pass to clone nodes & recreate next/prev chain up to 'this.end'
+        // PASS 1
         Node<?> current = this.start;
         while (current != null) {
-            // Create isolated copy of node content
-            Node<?> clonedNode = new Node<>(current.getContent());
-            // Append to new polymer (wires up prev/next pointers iteratively)
-            clonedPolymer.append(clonedNode);
-            // Register in map
-            nodeMap.put(current, clonedNode);
-
-            // Stop if we have reached the designated end node
-            if (current == this.end) {
-                break;
+            NodeContent<?> content = current.getContent();
+            if (content instanceof BracketContent bracket) {
+                content = new BracketContent(bracket.toString()); // fresh object, corresponding set in pass 2
             }
-
-            // Advance linearly along original list
+            Node<?> clonedNode = new Node<>(content);
+            clonedPolymer.append(clonedNode);
+            nodeMap.put(current, clonedNode);
+            if (current == this.end) break;
             current = current.getNext();
         }
 
-        // PASS 2: Iterative linear pass to wire up cross-references up to 'this.end'
+        // PASS 2
         current = this.start;
         while (current != null) {
             if (current.getContent() instanceof BracketContent bracket) {
                 Node<?> originalCorresponding = bracket.getCorresponding();
-
                 if (originalCorresponding != null) {
-                    // Fetch the cloned counterparts directly from the Map
                     Node<?> clonedBracketNode = nodeMap.get(current);
                     Node<?> clonedCorrespondingNode = nodeMap.get(originalCorresponding);
-
-                    // Only wire if the corresponding node is also within this cloned range
-                    if (clonedBracketNode != null && clonedCorrespondingNode != null) {
-                        BracketContent clonedContent = (BracketContent) clonedBracketNode.getContent();
-                        clonedContent.setCorresponding(clonedCorrespondingNode);
+                    if (clonedCorrespondingNode != null) {   // partner may lie outside the range
+                        ((BracketContent) clonedBracketNode.getContent())
+                                .setCorresponding(clonedCorrespondingNode);
                     }
                 }
             }
-
-            // Stop if we have reached the designated end node
-            if (current == this.end) {
-                break;
-            }
-
-            // Advance linearly
+            if (current == this.end) break;      // <-- same here
             current = current.getNext();
         }
-
         return clonedPolymer;
     }
 

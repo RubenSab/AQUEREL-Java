@@ -26,6 +26,9 @@ public class Interpreter {
         Stack<Node<BracketContent>> bracketStack = new Stack<>();
         Node prevNode = null;
         for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).startsWith("#")) {
+                break;
+            }
             List<String> tokens = Utils.findallMatches("'(?:\\\\.|[^'\\\\])*'|[^\\s()]+|[()]", lines.get(i));
             for (String t : tokens) {
                 NodeContent content = tokenToContent(t);

@@ -342,6 +342,7 @@ public enum OperationContent implements NodeContent<OperationContent> {
             Node<?> op = context.mainPolymer().getEnzyme();
             Node<?> next = op.getNext();
             Polymer arg = op.getPrev().getCorrespondingPolymer();
+            System.out.println("polymer: " + arg);
             context.mainPolymer().replaceNodeWithPolymer(op, arg.clone());
             return next;
         }
